@@ -1,0 +1,26 @@
+{
+    "domain": "shopt.gq",
+    "cloudProvider": "aws",
+    "awsAccountId": "379605592402",
+    "orchestration": "kubernetes",
+    "awsRegion": "ap-south-1",
+    "awsAccessKey": "<awsAccessKey>",
+    "awsSecretKey": "<awsSecretKey>",
+    "instanceType": "t3.medium",
+    "clusterName": "reminder",
+    "ingress": "istio",
+    "monitoring": "true",
+    "enableECK": "true",
+    "k8sWebUI": "true",
+    "projectName": "reminder",
+    "projectId" : "reminder-aws",
+    "generateInfra": "false",
+    "domain" : "com",
+    "kubernetesNamespace" : "k8s",
+    "appFolders": [
+        "client",
+        "products",
+        "carts",
+        "users"
+    ]
+}
