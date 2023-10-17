@@ -1,10 +1,11 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: kaniko-single-repo-run-
+  generateName: go-pipeline-run-
+  namespace: go-pipeline-namespace
 spec:
   pipelineRef:
-    name: kaniko-single-repo
+    name: go-pipeline
 
   podTemplate:
     securityContext:
@@ -24,6 +25,9 @@ spec:
 
   params:
   - name: repo-url
-    value: https://github.com/tic-oss/wda-ui.git
+    value: git@github.com:Nandiniperikala/private.git
+  - name: revision
+    value: main 
   - name: image-reference
-    value: <paste docker registry>/wda-ui:latest
+    value: nandinikarthik14/go:latest
+  serviceAccountName: go-pipeline-service-account

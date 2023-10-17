@@ -1,9 +1,9 @@
-<h3><center>Clone, Build and push multiple Git Repositories using Tekton</h3>
+<h3><center>Clone, Build and push a Git Repository using Tekton</center></h3>
 <h4>Prerequisites:</h4>
 <ol>
     <li>Have a kubernetes cluster running and install kubectl</li>
-    <li>Install Tekton Pipelines using<br>
-        kubectl apply –-filename \ 
+    <li>Install Tekton Pipelines using <br>
+        kubectl apply --filename \ 
         https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
     </li>
     <li>Install Tekton CLI, tkn on your machine <br>
@@ -21,7 +21,7 @@
         </ul>
     </li>
 </ol>
-<h5>Create the Pipeline which contains the clone, build and push multiple git repositories</h5>
+<h5>Create the Pipeline which contains the clone, build and push a git repository</h5>
 Start the kubernetes container(In this example, we're going to show on minikube).
 ```minikube start && minikube dashboard```
 minikube dashboard is a ui representation of kubernetes.
@@ -40,6 +40,8 @@ Install kaniko from tekton hub using
 This Task builds source into a container image using Google's kaniko tool.
 kaniko doesn't depend on a Docker daemon and executes each command within a Dockerfile completely in userspace. This enables building container images in environments that can't easily or securely run a Docker daemon, such as a standard Kubernetes cluster.
 kaniko is meant to be run as an image, gcr.io/kaniko-project/executor:v1.5.1. This makes it a perfect tool to be part of Tekton. This task can also be used with Tekton Chains to attest and sign the image.
+
+Write the create a pipeline and add tasks
 The example pipeline will look like:<br>
 ```
 //pipeline.yml
@@ -53,14 +55,6 @@ spec:
     pushes it to a registry
   params:
   - name: repo-url
-    type: string
-  - name: image-reference
-    type: string
-  - name: repo-url-1
-    type: string
-  - name: repo-url-2
-    type: string
-  - name: repo-url-3
     type: string
 
   workspaces:
@@ -77,44 +71,8 @@ spec:
     params:
     - name: url
       value: $(params.repo-url)
-  - name: fetch-source-1
-    runAfter: ["fetch-source"]
-    taskRef:
-      name: git-clone
-    workspaces:
-    - name: output
-      workspace: shared-data
-    params:
-    - name: url
-      value: $(params.repo-url-1)
-    - name: subdirectory
-      value: generator-tf-wdi
-  - name: fetch-source-2
-    runAfter: ["fetch-source","fetch-source-1"]
-    taskRef:
-      name: git-clone
-    workspaces:
-    - name: output
-      workspace: shared-data
-    params:
-    - name: url
-      value: $(params.repo-url-2)
-    - name: subdirectory
-      value: generator-jhipster
-  - name: fetch-source-3
-    runAfter: ["fetch-source","fetch-source-1","fetch-source-2"]
-    taskRef:
-      name: git-clone
-    workspaces:
-    - name: output
-      workspace: shared-data
-    params:
-    - name: url
-      value: $(params.repo-url-3)
-    - name: subdirectory
-      value: jhipster-blueprints
   - name: build-push
-    runAfter: ["fetch-source","fetch-source-1","fetch-source-2","fetch-source-3"]
+    runAfter: ["fetch-source"]
     taskRef:
       name: kaniko
     workspaces:
@@ -155,15 +113,9 @@ spec:
 
   params:
   - name: repo-url
-    value: https://github.com/tic-oss/wda-server.git
+    value: <paste_the_git_url>
   - name: image-reference
-    value: lokeshkarakala/wda-server:latest
-  - name: repo-url-1
-    value: https://github.com/tic-oss/generator-tf-wdi.git
-  - name: repo-url-2
-    value: https://github.com/tic-oss/generator-jhipster.git
-  - name: repo-url-3
-    value: https://github.com/tic-oss/jhipster-blueprints.git
+    value: <docker_registry>/<image_name>:latest
 ```
 The following code is used to clone(using git-clone from Tekton Hub) and build-push( using Kaniko from Tekton Hub).
 
@@ -180,9 +132,6 @@ data:
 ```
 <br>config.json can be found using the following command ```nano .docker/config.json```
 Remember kaniko is used only when there is a Dockerfile written in the application
-
-```runAfter``` make sure that the task starts only after successful execution of the defined task.
-In workspace, only one directory is created and allocated to the first repository created. Therefore subdirectories are added for the respective repositories.
 
 To run the pipeline, docker-credentials is passed as a secret
 ```kubectl apply -f docker-credentials.yml```

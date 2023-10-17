@@ -1,37 +1,48 @@
-"use strict";
 const Generator = require("yeoman-generator");
-const chalk = require("chalk");
-const yosay = require("yosay");
+const path = require("path");
+const fs = require("fs");
+
+const { fileListpipeline, fileListtriggers } = require("./assets/filesList");
 
 module.exports = class extends Generator {
-  prompting() {
-    // Have Yeoman greet the user.
-    this.log(
-      yosay(
-        `Welcome to the supreme ${chalk.red("generator-tekton")} generator!`
-      )
-    );
+  constructor(args, opts) {
+    super(args, opts);
 
-    const prompts = [
-      {
-        type: "confirm",
-        name: "someAnswer",
-        message: "Would you like to enable this option?",
-        default: true
-      }
-    ];
-
-    return this.prompt(prompts).then(props => {
-      // To access props later use this.props.someAnswer;
-      this.props = props;
-    });
+    if (opts.file) {
+      const filePath = path.resolve(opts.file);
+      const fileContents = fs.readFileSync(filePath, "utf8");
+      const options = JSON.parse(JSON.stringify(fileContents));
+      this.options = options;
+    }
   }
 
   writing() {
-    this.fs.copy(
-      this.templatePath("dummyfile.txt"),
-      this.destinationPath("dummyfile.txt")
-    );
+    const copyOpts = {
+      globOptions: {
+        ignore: []
+      }
+    };
+
+    const options = JSON.parse(this.options);
+    options.onRegistry = Boolean(options.Registry !== undefined);
+    if (options.pipeline === "true") {
+      this._fileHelper(fileListpipeline, options, copyOpts);
+    }
+
+    if (options.triggers === "true") {
+      this._fileHelper(fileListtriggers, options, copyOpts);
+    }
+  }
+
+  _fileHelper(fileList, opts, copyOpts) {
+    fileList.forEach(file => {
+      this.fs.copyTpl(
+        this.templatePath(file),
+        this.destinationPath(`tekton-pipeline/${file}`),
+        opts,
+        copyOpts
+      );
+    });
   }
 
   install() {
