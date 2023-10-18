@@ -7,7 +7,7 @@ let prompts = [
   },
   {
     type: "input",
-    name: "docker-config-json",
+    name: "config-json",
     message: "Encode and Enter your config-json:",
     default: "shggjhgjkglhfkjhk"
   },

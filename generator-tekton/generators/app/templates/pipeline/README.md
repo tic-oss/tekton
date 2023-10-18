@@ -1,145 +1,80 @@
-<h3><center>Clone, Build and push a Git Repository using Tekton</center></h3>
-<h4>Prerequisites:</h4>
-<ol>
-    <li>Have a kubernetes cluster running and install kubectl</li>
-    <li>Install Tekton Pipelines using <br>
-        kubectl apply --filename \ 
+Clone, build and push the images to docker registry using Tekton
+
+
+Set up a Pipeline that builds a Docker image using Kaniko on your kubernetes cluster
+
+   1.Retrieve the source code.
+   2.Build and push the source code into a Docker image.
+   3.Push the image to the specified repository.
+
+Set up an EventListener that accepts and processes GitHub push events.
+Set up a TriggerTemplate that instantiates a PipelineResource and executes a PipelineRun and its associated 'TaskRuns' when the EventListener detects the push event from a GitHub repository.
+
+Run the completed stack to experience Tekton Triggers in action.
+
+
+Prerequisites:
+1.Have a kubernetes cluster running and install kubectl
+2.Install Tekton Pipelines using
+     kubectl apply --filename \ 
         https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
-    </li>
-    <li>Install Tekton CLI, tkn on your machine <br>
-        To install tkn, follow <a href="https://tekton.dev/docs/cli/">https://tekton.dev/docs/cli/</a>
-    </li>
-    <li>
-        Install the git-clone and kaniko tasks <br>
-        tkn hub install task git-clone <br>
-        tkn hub install task kaniko <br>
-        <ul type="disc">
-            <li>git-clone is the task from tekton-hub for cloning the git repositories. <br>
-            For more information, go through <a href="https://hub.tekton.dev/tekton/task/git-clone">https://hub.tekton.dev/tekton/task/git-clone</a> </li>
-            <li>Kaniko is the task for building and pushing images to the required workspace. <br>
-            For more information on kaniko, visit <a href="https://hub.tekton.dev/tekton/task/kaniko">https://hub.tekton.dev/tekton/task/kaniko</a> </li>
-        </ul>
-    </li>
-</ol>
-<h5>Create the Pipeline which contains the clone, build and push a git repository</h5>
-Start the kubernetes container(In this example, we're going to show on minikube).
-```minikube start && minikube dashboard```
-minikube dashboard is a ui representation of kubernetes.
+3.Install Tekton Triggers using
+     kubectl apply --filename \
+        https://storage.googleapis.com/tekton-releases/triggers/latest/release.yaml
+     kubectl apply --filename \
+        https://storage.googleapis.com/tekton-releases/triggers/latest/interceptors.yaml
+4.Install tekton Dashboard 
+     kubectl apply --filename \
+        https://storage.googleapis.com/tekton-releases/dashboard/latest/release-full.yaml
 
-<h4>Install Tekton Pipelines</h4>
+When all components show Running the STATUS column the installation is complete.
 
-```kubectl apply --filename \https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml```
-
-Install git-clone from tekton hub using
-```tkn hub install task git-clone```
-The git-clone Task will clone a repo from the provided url into the output Workspace. By default the repo will be cloned into the root of your Workspace. You can clone into a subdirectory by setting this Task's subdirectory param. This Task also supports sparse checkouts. To perform a sparse checkout, pass a list of comma separated directory patterns to this Task's sparseCheckoutDirectories param.
-
-Install kaniko from tekton hub using
-```tkn hub install task kaniko```
-
-This Task builds source into a container image using Google's kaniko tool.
-kaniko doesn't depend on a Docker daemon and executes each command within a Dockerfile completely in userspace. This enables building container images in environments that can't easily or securely run a Docker daemon, such as a standard Kubernetes cluster.
-kaniko is meant to be run as an image, gcr.io/kaniko-project/executor:v1.5.1. This makes it a perfect tool to be part of Tekton. This task can also be used with Tekton Chains to attest and sign the image.
-
-Write the create a pipeline and add tasks
-The example pipeline will look like:<br>
+>Access Tekton Dashboard 
 ```
-//pipeline.yml
-apiVersion: tekton.dev/v1beta1
-kind: Pipeline
-metadata:
-  name: clone-build-push
-spec:
-  description: | 
-    This pipeline clones a git repo, builds a Docker image with Kaniko and
-    pushes it to a registry
-  params:
-  - name: repo-url
-    type: string
-
-  workspaces:
-  - name: shared-data
-  - name: docker-credentials
-
-  tasks:
-  - name: fetch-source
-    taskRef:
-      name: git-clone
-    workspaces:
-    - name: output
-      workspace: shared-data
-    params:
-    - name: url
-      value: $(params.repo-url)
-  - name: build-push
-    runAfter: ["fetch-source"]
-    taskRef:
-      name: kaniko
-    workspaces:
-    - name: source
-      workspace: shared-data
-    - name: dockerconfig
-      workspace: docker-credentials
-    params:
-    - name: IMAGE
-      value: $(params.image-reference)
+     >The Tekton Dashboard is not exposed outside the cluster by default, but we can access it by port-forwarding to the tekton-dashboard Service on port 9097
+     ```
+     kubectl port-forward -n tekton-pipelines service/tekton-dashboard 9097:9097
+     ```
+     You can now open the Dashboard in your browser at http://localhost:9097
+                                                       ```
+>Install Tekton CLI, tkn on your machine
 ```
-The pipelinerun code for the following will be:
+   To install tkn, follow href https://tekton.dev/docs/cli/
+   ```
+>Lets run the 00-namespace.yml file to create namespace
 ```
-//pipelinerun.yaml
-apiVersion: tekton.dev/v1beta1
-kind: PipelineRun
-metadata:
-  generateName: clone-build-push-run-
-spec:
-  pipelineRef:
-    name: clone-build-push
+   kubectl apply -f 00-namespace.yml
+   ```
+Install the git-clone and kaniko tasks
 
-  podTemplate:
-    securityContext:
-      fsGroup: 65532
-  workspaces:
-  - name: shared-data
-    volumeClaimTemplate:
-      spec:
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
-  - name: docker-credentials
-    secret:
-      secretName: docker-credentials
-
-  params:
-  - name: repo-url
-    value: <paste_the_git_url>
-  - name: image-reference
-    value: <docker_registry>/<image_name>:latest
+tkn hub install task git-clone -n <namespace>
 ```
-The following code is used to clone(using git-clone from Tekton Hub) and build-push( using Kaniko from Tekton Hub).
-
-From the code, it is observed that the registry is used for creating an image for the repository.
-This can be achieved by providing docker credentials in kubernetes secret. A file is named docker-credentials.yml and mention the config.json.
+tkn hub install task kaniko -n <namespace>
 ```
-//docker-credentials.yml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: docker-credentials
-data:
-  config.json: <provide_docker_config.json>
+
+1. git-clone is the task from tekton-hub for cloning the git repositories.
+For more information, go through https://hub.tekton.dev/tekton/task/git-clone
+2. Kaniko is the task for building and pushing images to the required workspace.
+For more information on kaniko, visit https://hub.tekton.dev/tekton/task/kaniko
+
+
+>Run the yml files for Pipeline
 ```
-<br>config.json can be found using the following command ```nano .docker/config.json```
-Remember kaniko is used only when there is a Dockerfile written in the application
 
-To run the pipeline, docker-credentials is passed as a secret
-```kubectl apply -f docker-credentials.yml```
-  Now the docker-credentials is set. It uses the docker account to push the image into the registry
+Configure your cluster as follows:
 
-Now run the pipeline using ```kubectl apply -f pipeline.yml```
-  This creates the pipeline
+Create the secret for ssh key and docker registry using the following command:
 
-Now create pipelinerun using ```kubectl create -f pipelinerun.yaml```
+    kubectl apply -f 01-ssh-credentials.yml
+    ```
+    kubectl apply -f 02-docker-credentials.yml
+    ```
+Create the admin user, role, and rolebinding using the following command:
+ 
+   kubectl apply -f 03-rbac.yml
+    ```
+   
 
-Check the logs by ```tkn pipeline logs```
+
+
+ 
