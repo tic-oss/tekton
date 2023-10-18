@@ -7,7 +7,7 @@ let prompts = [
   },
   {
     type: "input",
-    name: "config-json",
+    name: "docker-config-json",
     message: "Encode and Enter your config-json:",
     default: "shggjhgjkglhfkjhk"
   },
@@ -25,7 +25,7 @@ let prompts = [
   },
   {
     type: "input",
-    name: "registryName",
+    name: "registryUserName",
     message: "Enter your image registry Name:",
     choices: ["ecr", "acr", "gitpackage", "docker-hub"]
   },
