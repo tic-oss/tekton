@@ -18,6 +18,7 @@ spec:
   workspaces:
   - name: shared-data
   - name: docker-credentials
+  - name: ssh-creds
 
   tasks:
   - name: fetch-source
@@ -26,6 +27,8 @@ spec:
     workspaces:
     - name: output
       workspace: shared-data
+    - name: ssh-directory
+      workspace: ssh-creds
     params:
     - name: url
       value: $(params.repo-url)

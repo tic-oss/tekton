@@ -10,7 +10,7 @@ spec:
   - name: repo-url
     value: git@github.com:Nandiniperikala/private.git
   - name: image-reference
-    value: nandinikarthik14/go:latest
+    value: nandinikarthik14/new-go:latest
   
 ---
 
@@ -45,7 +45,10 @@ spec:
       - name: docker-credentials
         secret:
           secretName: docker-credentials
-          
+      - name: ssh-creds
+        secret:
+          secretName: git-sshkey-secret
+      
       params:
       - name: repo-url
         value: $(tt.params.repo-url)
@@ -53,3 +56,4 @@ spec:
         value: $(tt.params.revision)
       - name: image-reference
         value: $(tt.params.image-reference)
+      

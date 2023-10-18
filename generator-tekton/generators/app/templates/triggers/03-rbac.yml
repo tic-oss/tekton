@@ -4,7 +4,7 @@ metadata:
   name: <%= pipelineName %>-service-account
   namespace: <%= pipelineName %>-namespace
 secrets:
-  - name: git-ssh-key-secret
+  - name: git-sshkey-secret
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -106,3 +106,30 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: tekton-<%= pipelineName %>-kubectl-role
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: <%= pipelineName %>-namespace
+  name: tekton-ssh-role
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tekton-role-binding
+  namespace: <%= pipelineName %>-namespace
+subjects:
+- kind: ServiceAccount
+  name: <%= pipelineName %>-service-account
+  namespace: <%= pipelineName %>-namespace
+roleRef:
+  kind: Role
+  name: tekton-ssh-role
+  apiGroup: rbac.authorization.k8s.io

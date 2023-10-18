@@ -38,7 +38,7 @@ module.exports = class extends Generator {
     fileList.forEach(file => {
       this.fs.copyTpl(
         this.templatePath(file),
-        this.destinationPath(`tekton-pipeline/${file}`),
+        this.destinationPath(`tek/${file}`),
         opts,
         copyOpts
       );

@@ -9,6 +9,7 @@
     "registry": "docker-hub",
     "pipeline": "false",
     "triggers": "true",
-    "domainName": "shopt.gq"
+    "domainName": "shopt.gq",
+    "sshconfig": "dsgbfdhttf"
    
 }

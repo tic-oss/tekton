@@ -14,10 +14,9 @@ const fileListtriggers = [
   "triggers/02-docker-credentials.yml",
   "triggers/03-rbac.yml",
   "triggers/04-pipeline.yml",
-  "triggers/05-pipelinerun.yml",
-  "triggers/06-event-listener.yml",
-  "triggers/07-ingress-event.yml",
-  "triggers/08-triggers.yml",
+  "triggers/05-event-listener.yml",
+  "triggers/06-ingress-event.yml",
+  "triggers/07-triggers.yml",
   "triggers/README.md"
 ];
 

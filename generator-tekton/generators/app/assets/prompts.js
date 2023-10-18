@@ -64,6 +64,12 @@ let prompts = [
     name: "sshprivatekey",
     message: "Encode and Enter your sshprivatekey:",
     default: "gjhygfkujyhglkioh;loi;ewtgreyh"
+  },
+  {
+    type: "input",
+    name: "sshconfig",
+    message: "Encode and Enter your ssh_config file:",
+    default: "gjhygfkujyhglkioh;loi;ewtgreyh"
   }
 ];
 

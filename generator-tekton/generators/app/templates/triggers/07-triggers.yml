@@ -59,6 +59,9 @@ spec:
       - name: docker-credentials
         secret:
           secretName: docker-credentials
+      - name: ssh-creds
+        secret:
+          secretName: git-sshkey-secret
           
       params:
       - name: repo-url
