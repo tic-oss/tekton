@@ -31,17 +31,17 @@ When all components show Running the STATUS column the installation is complete.
 
 >Access Tekton Dashboard 
 ```
-     >The Tekton Dashboard is not exposed outside the cluster by default, but we can access it by port-forwarding to the tekton-dashboard Service on port 9097
-     ```
+     The Tekton Dashboard is not exposed outside the cluster by default, but we can access it by port-forwarding to the tekton-dashboard Service on port 9097
+    
      kubectl port-forward -n tekton-pipelines service/tekton-dashboard 9097:9097
      ```
      You can now open the Dashboard in your browser at http://localhost:9097
                                                        ```
->Install Tekton CLI, tkn on your machine
+Install Tekton CLI, tkn on your machine
 ```
    To install tkn, follow href https://tekton.dev/docs/cli/
    ```
->Lets run the 00-namespace.yml file to create namespace
+Lets run the 00-namespace.yml file to create namespace
 ```
    kubectl apply -f 00-namespace.yml
    ```
@@ -72,7 +72,7 @@ Create the secret for ssh key and docker registry using the following command:
 Create the admin user, role, and rolebinding using the following command:
  
    kubectl apply -f 03-rbac.yml
-    ```
+   ```
    
 
 
