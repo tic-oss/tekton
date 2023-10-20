@@ -8,9 +8,9 @@ spec:
   - name: revision
     value: $(body.head_commit.id)
   - name: repo-url
-    value: git@github.com:Nandiniperikala/private.git
+    value: < ssh repo url >
   - name: image-reference
-    value: nandinikarthik14/new-go:latest
+    value: < userName/new-go:latest >
   
 ---
 

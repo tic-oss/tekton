@@ -25,7 +25,7 @@ spec:
   - name: ssh-creds
     secret:
       secretName: git-sshkey-secret
-  
+
   params:
   - name: repo-url
     value: < ssh repo url >
