@@ -1,0 +1,43 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: jib-repo
+spec:
+  description: | 
+    This pipeline clones a git repo and builds a Spring Boot
+  params:
+  - name: repo-url
+    type: string
+  - name: image-reference
+    type: string
+  - name: maven-image-reference
+    type: string
+
+  workspaces:
+  - name: shared-data
+  - name: docker-credentials
+
+  tasks:
+  - name: clone-spring-repo
+    taskRef:
+      name: git-clone
+    workspaces:
+    - name: output
+      workspace: shared-data
+    params:
+    - name: url
+      value: $(params.repo-url)
+  - name: jib-maven
+    taskRef:
+      name: jib-maven
+    runAfter: ["clone-spring-repo"]
+    workspaces:
+    - name: source
+      workspace: shared-data
+    params:
+    - name: IMAGE
+      value: $(params.image-reference)
+    - name: DIRECTORY
+      value: ./springapp
+    - name: MAVEN_IMAGE
+      value: $(params.maven-image-reference)

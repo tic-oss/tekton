@@ -2,7 +2,12 @@ const Generator = require("yeoman-generator");
 const path = require("path");
 const fs = require("fs");
 
-const { fileListpipeline, fileListtriggers } = require("./assets/filesList");
+const {
+  fileListjibpipeline,
+  fileListjibtriggers,
+  fileListkanikopipeline,
+  fileListkanikotriggers
+} = require("./assets/filesList");
 
 module.exports = class extends Generator {
   constructor(args, opts) {
@@ -25,12 +30,20 @@ module.exports = class extends Generator {
 
     const options = JSON.parse(this.options);
     options.onRegistry = Boolean(options.Registry !== undefined);
-    if (options.pipeline === "true") {
-      this._fileHelper(fileListpipeline, options, copyOpts);
+    if (options.task === "jib") {
+      if (options.domain === "true") {
+        this._fileHelper(fileListjibtriggers, options, copyOpts);
+      } else {
+        this._fileHelper(fileListjibpipeline, options, copyOpts);
+      }
     }
 
-    if (options.triggers === "true") {
-      this._fileHelper(fileListtriggers, options, copyOpts);
+    if (options.task === "kaniko") {
+      if (options.domain === "true") {
+        this._fileHelper(fileListkanikotriggers, options, copyOpts);
+      } else {
+        this._fileHelper(fileListkanikopipeline, options, copyOpts);
+      }
     }
   }
 
@@ -38,7 +51,7 @@ module.exports = class extends Generator {
     fileList.forEach(file => {
       this.fs.copyTpl(
         this.templatePath(file),
-        this.destinationPath(`tek/${file}`),
+        this.destinationPath(`pipeline/${file}`),
         opts,
         copyOpts
       );
