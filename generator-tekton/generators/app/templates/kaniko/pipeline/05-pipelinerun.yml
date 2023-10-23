@@ -4,6 +4,7 @@ metadata:
   generateName: <%= pipelineName %>-run-
   namespace: <%= pipelineName %>-namespace
 spec:
+  serviceAccountName: <%= pipelineName %>-service-account
   pipelineRef:
     name: <%= pipelineName %>
 
@@ -47,4 +48,4 @@ spec:
   - name: image-reference
     value: nandinikarthik14/go:latest
   <%_ } _%>
-  serviceAccountName: <%= pipelineName %>-service-account
+  

@@ -1,7 +1,7 @@
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
-  name: <%= pipelineName %>-trigger-binding
+  name: <%= pipelineName %>-trigger-binding 
   namespace: <%= pipelineName %>-namespace
 spec:
   params:
@@ -25,6 +25,8 @@ spec:
   - name: image-reference
     value: nandinikarthik14/go:latest
   <%_ } _%>
+  - name: maven-image-reference
+    value: lokeshkarakala/custom-dev-image
   
 ---
 
@@ -37,6 +39,7 @@ spec:
   params:
   - name: revision
     default: <%= branch %>
+  - name: maven-image-reference
   - name: repo-url
   - name: image-reference
   resourcetemplates:
@@ -45,6 +48,7 @@ spec:
     metadata:
       generateName: <%= pipelineName %>-run-
     spec:
+      serviceAccountName: <%= pipelineName %>-service-account
       pipelineRef:
         name: <%= pipelineName %>
       workspaces:
@@ -62,7 +66,7 @@ spec:
       - name: ssh-creds
         secret:
           secretName: git-sshkey-secret
-          
+      
       params:
       - name: repo-url
         value: $(tt.params.repo-url)
@@ -70,3 +74,6 @@ spec:
         value: $(tt.params.revision)
       - name: image-reference
         value: $(tt.params.image-reference)
+      - name: maven-image-reference
+        value: $(tt.params.maven-image-reference)
+      

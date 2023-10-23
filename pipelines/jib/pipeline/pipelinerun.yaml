@@ -2,8 +2,9 @@ apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
   generateName: jib-repo-run-
+  namespace: pipelinename-namespace
 spec:
-  serviceAccountName: build-bot
+  serviceAccountName: pipelinename-service-account
   pipelineRef:
     name: jib-repo
 
@@ -22,11 +23,14 @@ spec:
   - name: docker-credentials
     secret:
       secretName: docker-credentials
+  - name: ssh-creds
+    secret:
+      secretName: git-sshkey-secret
 
   params:
   - name: repo-url
-    value: https://github.com/lokesh-cmi/SpringApplication.git
+    value: git@github.com:Nandiniperikala/spring.git
   - name: image-reference
-    value: <paste docker registry>/springapplication
+    value: nandinikarthik14/springapp
   - name: maven-image-reference
     value: lokeshkarakala/custom-dev-image

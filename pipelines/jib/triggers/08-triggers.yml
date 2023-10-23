@@ -1,53 +1,42 @@
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
-  name: <%= pipelineName %>-trigger-binding
-  namespace: <%= pipelineName %>-namespace
+  name: go-pipeline-trigger-binding
+  namespace: pipelinename-namespace
 spec:
   params:
   - name: revision
     value: $(body.head_commit.id)
   - name: repo-url
-    value: <%= repoURL %>
-  <%_ if (registry == "docker-hub") { _%>
+    value: git@github.com:Nandiniperikala/spring.git
   - name: image-reference
-    value: <%= registryName %>/<%= imageName %>:latest
-  <%_ } _%>
-  <%_ if (registry == "acr") { _%>
-  - name: image-reference
-    value: <%= registryName %>.azurecr.io/<%= imageName %>:latest
-  <%_ } _%>
-  <%_ if (registry == "ecr") { _%>
-  - name: image-reference
-    value: <%= registryURI %>/<%= imageName %>:latest
-  <%_ } _%>
-  <%_ if (registry == "git-package") { _%>
-  - name: image-reference
-    value: nandinikarthik14/go:latest
-  <%_ } _%>
+    value: nandinikarthik14/springapp
+  - name: maven-image-reference
+    value: lokeshkarakala/custom-dev-image
   
 ---
 
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerTemplate
 metadata:
-  name: <%= pipelineName %>-trigger-template
-  namespace: <%= pipelineName %>-namespace
+  name: go-pipeline-trigger-template
+  namespace: pipelinename-namespace
 spec:
   params:
   - name: revision
-    default: <%= branch %>
+    default: main
+  - name: maven-image-reference
   - name: repo-url
   - name: image-reference
   resourcetemplates:
   - apiVersion: tekton.dev/v1beta1
     kind: PipelineRun
     metadata:
-      generateName: <%= pipelineName %>-run-
+      generateName: go-pipeline-run-
     spec:
-      serviceAccountName: <%= pipelineName %>-service-account
+      serviceAccountName: pipelinename-service-account
       pipelineRef:
-        name: <%= pipelineName %>
+        name: jib-repo
       workspaces:
       - name: shared-data
         volumeClaimTemplate:
@@ -63,7 +52,7 @@ spec:
       - name: ssh-creds
         secret:
           secretName: git-sshkey-secret
-          
+      
       params:
       - name: repo-url
         value: $(tt.params.repo-url)
@@ -71,3 +60,6 @@ spec:
         value: $(tt.params.revision)
       - name: image-reference
         value: $(tt.params.image-reference)
+      - name: maven-image-reference
+        value: $(tt.params.maven-image-reference)
+      

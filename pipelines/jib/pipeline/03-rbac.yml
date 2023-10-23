@@ -1,16 +1,17 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: <%= pipelineName %>-service-account
-  namespace: <%= pipelineName %>-namespace
+  name: pipelinename-service-account
+  namespace: pipelinename-namespace
 secrets:
   - name: git-sshkey-secret
+  - name: docker-credentials
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: tekton-<%= pipelineName %>-role
-  namespace: <%= pipelineName %>-namespace
+  name: tekton-pipelinename-role
+  namespace: pipelinename-namespace
 rules:
 # EventListeners need to be able to fetch all namespaced resources
 - apiGroups: ["triggers.tekton.dev"]
@@ -35,22 +36,22 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: tekton-<%= pipelineName %>-binding
-  namespace: <%= pipelineName %>-namespace
+  name: tekton-pipelinename-binding
+  namespace: pipelinename-namespace
 subjects:
 - kind: ServiceAccount
-  name: <%= pipelineName %>-service-account
-  namespace: <%= pipelineName %>-namespace
+  name: pipelinename-service-account
+  namespace: pipelinename-namespace
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: tekton-<%= pipelineName %>-role
+  name: tekton-pipelinename-role
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: tekton-<%= pipelineName %>-clusterrole
-  namespace: <%= pipelineName %>-namespace
+  name: tekton-pipelinename-clusterrole
+  namespace: pipelinename-namespace
 rules:
   # EventListeners need to be able to fetch any clustertriggerbindings
 - apiGroups: ["triggers.tekton.dev"]
@@ -60,22 +61,22 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: tekton-<%= pipelineName %>-clusterbinding
-  namespace: <%= pipelineName %>-namespace
+  name: tekton-pipelinename-clusterbinding
+  namespace: pipelinename-namespace
 subjects:
 - kind: ServiceAccount
-  name: <%= pipelineName %>-service-account
-  namespace: <%= pipelineName %>-namespace
+  name: pipelinename-service-account
+  namespace: pipelinename-namespace
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: tekton-<%= pipelineName %>-clusterrole
+  name: tekton-pipelinename-clusterrole
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: tekton-<%= pipelineName %>-kubectl-role
-  namespace: <%= pipelineName %>-namespace
+  name: tekton-pipelinename-kubectl-role
+  namespace: pipelinename-namespace
 rules:
 - apiGroups:
   - "*"
@@ -96,23 +97,23 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: tekton-<%= pipelineName %>-kubectl-binding
-  namespace: <%= pipelineName %>-namespace
+  name: tekton-pipelinename-kubectl-binding
+  namespace: pipelinename-namespace
 subjects:
 - kind: ServiceAccount
-  name: <%= pipelineName %>-service-account
-  namespace: <%= pipelineName %>-namespace
+  name: pipelinename-service-account
+  namespace: pipelinename-namespace
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: tekton-<%= pipelineName %>-kubectl-role
+  name: tekton-pipelinename-kubectl-role
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  namespace: <%= pipelineName %>-namespace
-  name: tekton-<%= pipelineName %>-ssh-role
+  namespace: pipelinename-namespace
+  name: tekton-pipelinename-ssh-role
 rules:
 - apiGroups: [""]
   resources: ["secrets"]
@@ -122,13 +123,13 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: tekton-<%= pipelineName %>-ssh-binding
-  namespace: <%= pipelineName %>-namespace
+  name: tekton-pipelinename-ssh-binding
+  namespace: pipelinename-namespace
 subjects:
 - kind: ServiceAccount
-  name: <%= pipelineName %>-service-account
-  namespace: <%= pipelineName %>-namespace
+  name: pipelinename-service-account
+  namespace: pipelinename-namespace
 roleRef:
   kind: Role
-  name: tekton-<%= pipelineName %>-ssh-role
+  name: tekton-pipelinename-ssh-role
   apiGroup: rbac.authorization.k8s.io

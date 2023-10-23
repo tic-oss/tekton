@@ -1,21 +1,20 @@
 const fileListjibpipeline = [
   "jib/pipeline/00-namespace.yml",
   "jib/pipeline/01-ssh-credentials.yml",
-  "jib/pipeline/02-docker-credentials.yml",
-  "jib/pipeline/03-rbac.yml",
-  "jib/pipeline/04-pipeline.yml",
-  "jib/pipeline/05-pipelinerun.yml",
+  "jib/pipeline/02-rbac.yml",
+  "jib/pipeline/03-pipeline.yml",
+  "jib/pipeline/04-pipelinerun.yml",
   "README.md"
 ];
 
 const fileListjibtriggers = [
   "jib/triggers/00-namespace.yml",
   "jib/triggers/01-ssh-credentials.yml",
-  "jib/triggers/02-docker-credentials.yml",
-  "jib/triggers/03-rbac.yml",
-  "jib/triggers/05-event-listener.yml",
-  "jib/triggers/06-ingress-event.yml",
-  "jib/triggers/07-triggers.yml",
+  "jib/triggers/02-rbac.yml",
+  "jib/triggers/03-pipeline.yml",
+  "jib/triggers/04-event-listener.yml",
+  "jib/triggers/05-ingress-event.yml",
+  "jib/triggers/06-triggers.yml",
   "README.md"
 ];
 

@@ -1,0 +1,16 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: go-pipeline-eventlistener
+  namespace: pipelinename-namespace
+spec:
+  serviceAccountName: pipelinename-service-account
+  triggers:
+    - name: go-pipeline-trigger
+      bindings:
+        - ref: go-pipeline-trigger-binding
+      template:
+        ref: go-pipeline-trigger-template
+
+
+
