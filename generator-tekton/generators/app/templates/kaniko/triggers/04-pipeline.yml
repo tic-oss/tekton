@@ -46,3 +46,5 @@ spec:
     params:
     - name: IMAGE
       value: $(params.image-reference)
+    - name: DIRECTORY
+      value: ./<%= directoryName %>

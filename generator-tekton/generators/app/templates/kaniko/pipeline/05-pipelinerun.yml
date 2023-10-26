@@ -32,20 +32,5 @@ spec:
     value: <%= repoURL %>
   - name: revision
     value: <%= branch %> 
-  <%_ if (registry == "docker-hub") { _%>
   - name: image-reference
-    value: <%= registryName %>/<%= imageName %>:latest
-  <%_ } _%>
-  <%_ if (registry == "acr") { _%>
-  - name: image-reference
-    value: <%= registryName %>.azurecr.io/<%= imageName %>:latest
-  <%_ } _%>
-  <%_ if (registry == "ecr") { _%>
-  - name: image-reference
-    value: <%= registryURI %>/<%= imageName %>:latest
-  <%_ } _%>
-  <%_ if (registry == "git-package") { _%>
-  - name: image-reference
-    value: nandinikarthik14/go:latest
-  <%_ } _%>
-  
+    value: <%= imageURL %>

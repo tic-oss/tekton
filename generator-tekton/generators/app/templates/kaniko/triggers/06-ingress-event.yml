@@ -12,13 +12,13 @@ spec:
         name: http
         protocol: HTTP
       hosts:
-        - <%= domainName %>
+        - <%= domain %>
     - port:
         number: 80
         name: http2
         protocol: HTTP2
       hosts:
-        - <%= domainName %>
+        - <%= domain %>
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
@@ -27,7 +27,7 @@ metadata:
   namespace: <%= pipelineName %>-namespace
 spec:
   hosts:
-    - <%= domainName %>
+    - <%= domain %>
   gateways:
     - <%= pipelineName %>-eventlistener-gateway
   http:

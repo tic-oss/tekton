@@ -46,6 +46,6 @@ spec:
     - name: IMAGE
       value: $(params.image-reference)
     - name: DIRECTORY
-      value: ./<%= directoryname %>
+      value: ./<%= directoryName %>
     - name: MAVEN_IMAGE
       value: $(params.maven-image-reference)

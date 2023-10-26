@@ -61,8 +61,8 @@ let prompts = [
   },
   {
     type: "input",
-    name: "sshprivatekey",
-    message: "Encode and Enter your sshprivatekey:",
+    name: "deployKey",
+    message: "Encode and Enter your deployKey:",
     default: "gjhygfkujyhglkioh;loi;ewtgreyh"
   },
   {

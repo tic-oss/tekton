@@ -9,22 +9,8 @@ spec:
     value: $(body.head_commit.id)
   - name: repo-url
     value: <%= repoURL %>
-  <%_ if (registry == "docker-hub") { _%>
   - name: image-reference
-    value: <%= registryName %>/<%= imageName %>:latest
-  <%_ } _%>
-  <%_ if (registry == "acr") { _%>
-  - name: image-reference
-    value: <%= registryName %>.azurecr.io/<%= imageName %>:latest
-  <%_ } _%>
-  <%_ if (registry == "ecr") { _%>
-  - name: image-reference
-    value: <%= registryURI %>/<%= imageName %>:latest
-  <%_ } _%>
-  <%_ if (registry == "git-package") { _%>
-  - name: image-reference
-    value: nandinikarthik14/go:latest
-  <%_ } _%>
+    value: <%= imageURL %>
   - name: maven-image-reference
     value: lokeshkarakala/custom-dev-image
   
