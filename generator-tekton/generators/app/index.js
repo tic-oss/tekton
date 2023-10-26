@@ -31,19 +31,17 @@ module.exports = class extends Generator {
     const options = JSON.parse(this.options);
     options.onRegistry = Boolean(options.Registry !== undefined);
     if (options.buildStrategy === "jib") {
-      if (options.domain === undefined || options.domain === "") {
-        this._fileHelper(fileListjibtriggers, options, copyOpts);
-      } else {
-        this._fileHelper(fileListjibpipeline, options, copyOpts);
-      }
+      const fileList = options.domain
+        ? fileListjibtriggers
+        : fileListjibpipeline;
+      this._fileHelper(fileList, options, copyOpts);
     }
 
     if (options.buildStrategy === "kaniko") {
-      if (options.domain === undefined || options.domain === "") {
-        this._fileHelper(fileListkanikotriggers, options, copyOpts);
-      } else {
-        this._fileHelper(fileListkanikopipeline, options, copyOpts);
-      }
+      const fileList = options.domain
+        ? fileListkanikotriggers
+        : fileListkanikopipeline;
+      this._fileHelper(fileList, options, copyOpts);
     }
   }
 
@@ -51,7 +49,7 @@ module.exports = class extends Generator {
     fileList.forEach(file => {
       this.fs.copyTpl(
         this.templatePath(file),
-        this.destinationPath(`pipeline`),
+        this.destinationPath(`pipeline/${file}`),
         opts,
         copyOpts
       );

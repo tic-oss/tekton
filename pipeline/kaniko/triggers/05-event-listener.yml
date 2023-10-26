@@ -1,0 +1,16 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: ticgo-pipeline-eventlistener
+  namespace: ticgo-pipeline-namespace
+spec:
+  serviceAccountName: ticgo-pipeline-service-account
+  triggers:
+    - name: ticgo-pipeline-trigger
+      bindings:
+        - ref: ticgo-pipeline-trigger-binding
+      template:
+        ref: ticgo-pipeline-trigger-template
+
+
+
