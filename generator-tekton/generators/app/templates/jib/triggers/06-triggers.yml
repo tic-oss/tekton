@@ -9,6 +9,10 @@ spec:
     value: $(body.head_commit.id)
   - name: repo-url
     value: <%= repoURL %>
+  - name: submodules
+    value: "false"
+  - name: directory
+    value: ./<%= directoryName %>
   - name: image-reference
     value: <%= imageURL %>
   - name: maven-image-reference
@@ -28,6 +32,8 @@ spec:
   - name: maven-image-reference
   - name: repo-url
   - name: image-reference
+  - name: submodules
+  - name: directory
   resourcetemplates:
   - apiVersion: tekton.dev/v1beta1
     kind: PipelineRun
@@ -58,6 +64,10 @@ spec:
         value: $(tt.params.repo-url)
       - name: revision
         value: $(tt.params.revision)
+      - name: submodules
+        value: $(tt.params.submodules)
+      - name: directory
+        value: $(tt.params.directory)
       - name: image-reference
         value: $(tt.params.image-reference)
       - name: maven-image-reference

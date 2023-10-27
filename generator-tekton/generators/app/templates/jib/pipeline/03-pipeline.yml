@@ -11,6 +11,10 @@ spec:
     type: string
   - name: revision
     type: string
+  - name: submodules
+    type: string
+  - name: directory
+    type: string
   - name: image-reference
     type: string
   - name: maven-image-reference
@@ -35,6 +39,8 @@ spec:
       value: $(params.repo-url)
     - name: revision
       value: $(params.revision)
+    - name: submodules
+      value: $(params.submodules)
   - name: jib-maven
     taskRef:
       name: jib-maven
@@ -46,6 +52,6 @@ spec:
     - name: IMAGE
       value: $(params.image-reference)
     - name: DIRECTORY
-      value: ./<%= directoryName %>
+      value: $(params.directory)
     - name: MAVEN_IMAGE
       value: $(params.maven-image-reference)

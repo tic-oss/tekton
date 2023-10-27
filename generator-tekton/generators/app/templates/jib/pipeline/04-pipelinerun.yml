@@ -32,6 +32,10 @@ spec:
     value: <%= repoURL %>
   - name: revision
     value: <%= branch %> 
+  - name: submodules
+    value: "false"
+  - name: directory
+    value: ./<%= directoryName %>
   - name: image-reference
     value: <%= imageURL %>
   - name: maven-image-reference
