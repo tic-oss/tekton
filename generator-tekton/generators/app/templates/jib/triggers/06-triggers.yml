@@ -11,10 +11,12 @@ spec:
     value: <%= repoURL %>
   - name: submodules
     value: "false"
-  - name: directory
-    value: ./<%= directoryName %>
   - name: image-reference
     value: <%= imageURL %>
+  - name: context
+    value: <%= PathtoContext %>
+  - name: dockerfile
+    value: $(workspaces.source.path)/<%= PathtoDockerfile %>
   - name: maven-image-reference
     value: lokeshkarakala/custom-dev-image
   
@@ -34,15 +36,21 @@ spec:
   - name: image-reference
   - name: submodules
   - name: directory
+  - name: dockerfile
+  - name: context
   resourcetemplates:
   - apiVersion: tekton.dev/v1beta1
     kind: PipelineRun
     metadata:
       generateName: <%= pipelineName %>-run-
+      namespace: <%= pipelineName %>-namespace
     spec:
       serviceAccountName: <%= pipelineName %>-service-account
       pipelineRef:
         name: <%= pipelineName %>
+      podTemplate:
+        securityContext:
+          fsGroup: 65532  
       workspaces:
       - name: shared-data
         volumeClaimTemplate:
@@ -51,7 +59,7 @@ spec:
             - ReadWriteOnce
             resources:
               requests:
-                storage: 1Gi
+                storage: 2Gi
       - name: docker-credentials
         secret:
           secretName: docker-credentials
@@ -66,10 +74,12 @@ spec:
         value: $(tt.params.revision)
       - name: submodules
         value: $(tt.params.submodules)
-      - name: directory
-        value: $(tt.params.directory)
       - name: image-reference
         value: $(tt.params.image-reference)
+      - name: context
+        value: $(tt.params.context)
+      - name: dockerfile
+        value: $(tt.params.dockerfile)
       - name: maven-image-reference
         value: $(tt.params.maven-image-reference)
       

@@ -14,9 +14,11 @@ spec:
     type: string
   - name: submodules
     type: string
-  - name: directory
-    type: string
   - name: image-reference
+    type: string
+  - name: context
+    type: string
+  - name: dockerfile
     type: string
   
   workspaces:
@@ -40,6 +42,7 @@ spec:
       value: $(params.revision)
     - name: submodules
       value: $(params.submodules)
+
   - name: build-push
     runAfter: ["fetch-source"]
     taskRef:
@@ -52,5 +55,7 @@ spec:
     params:
     - name: IMAGE
       value: $(params.image-reference)
-    - name: DIRECTORY
-      value: $(params.directory)
+    - name: CONTEXT
+      value: $(params.context)
+    - name: DOCKERFILE
+      value: $(params.dockerfile)

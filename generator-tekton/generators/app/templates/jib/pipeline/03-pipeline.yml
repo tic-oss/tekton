@@ -13,11 +13,13 @@ spec:
     type: string
   - name: submodules
     type: string
-  - name: directory
-    type: string
   - name: image-reference
     type: string
   - name: maven-image-reference
+    type: string
+  - name: context
+    type: string
+  - name: dockerfile
     type: string
 
   workspaces:
@@ -26,7 +28,7 @@ spec:
   - name: ssh-creds
 
   tasks:
-  - name: clone-spring-repo
+  - name: fetch-source
     taskRef:
       name: git-clone
     workspaces:
@@ -44,14 +46,18 @@ spec:
   - name: jib-maven
     taskRef:
       name: jib-maven
-    runAfter: ["clone-spring-repo"]
+    runAfter: ["fetch-source"]
     workspaces:
     - name: source
       workspace: shared-data
+    - name: dockerconfig
+      workspace: docker-credentials
     params:
     - name: IMAGE
       value: $(params.image-reference)
-    - name: DIRECTORY
-      value: $(params.directory)
     - name: MAVEN_IMAGE
       value: $(params.maven-image-reference)
+    - name: CONTEXT
+      value: $(params.context)
+    - name: DOCKERFILE
+      value: $(params.dockerfile)

@@ -19,7 +19,7 @@ spec:
         - ReadWriteOnce
         resources:
           requests:
-            storage: 1Gi
+            storage: 2Gi
   - name: docker-credentials
     secret:
       secretName: docker-credentials
@@ -32,9 +32,11 @@ spec:
     value: <%= repoURL %>
   - name: revision
     value: <%= branch %> 
-   - name: submodules
+  - name: submodules
     value: "false"
-  - name: directory
-    value: ./<%= directoryName %>
+  - name: context
+    value: <%= PathtoContext %>
+  - name: dockerfile
+    value: $(workspaces.source.path)/<%= PathtoDockerfile %>
   - name: image-reference
     value: <%= imageURL %>

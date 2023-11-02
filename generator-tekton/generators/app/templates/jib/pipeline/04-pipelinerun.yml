@@ -19,7 +19,7 @@ spec:
         - ReadWriteOnce
         resources:
           requests:
-            storage: 1Gi
+            storage: 2Gi
   - name: docker-credentials
     secret:
       secretName: docker-credentials
@@ -34,9 +34,11 @@ spec:
     value: <%= branch %> 
   - name: submodules
     value: "false"
-  - name: directory
-    value: ./<%= directoryName %>
   - name: image-reference
     value: <%= imageURL %>
+  - name: context
+    value: <%= PathtoContext %>
+  - name: dockerfile
+    value: $(workspaces.source.path)/<%= PathtoDockerfile %>
   - name: maven-image-reference
     value: lokeshkarakala/custom-dev-image
