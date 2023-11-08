@@ -1,0 +1,77 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: <%= pipelineName %>-trigger-binding
+  namespace: <%= pipelineName %>-namespace
+spec:
+  params:
+  - name: revision
+    value: $(body.head_commit.id)
+  - name: repo-url
+    value: <%= repoURL %>
+  - name: submodules
+    value: "false"
+  - name: image-reference
+    value: <%= imageURL %>
+  - name: context
+    value: <%= PathtoContext %>
+  - name: dockerfile
+    value: <%= PathtoDockerfile %>
+  
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: <%= pipelineName %>-trigger-template
+  namespace: <%= pipelineName %>-namespace
+spec:
+  params:
+  - name: revision
+    default: <%= branch %>
+  - name: repo-url
+  - name: image-reference
+  - name: submodules
+  - name: dockerfile
+  - name: context
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: <%= pipelineName %>-run-
+    spec:
+      serviceAccountName: <%= pipelineName %>-service-account
+      pipelineRef:
+        name: <%= pipelineName %>
+      podTemplate:
+        securityContext:
+          fsGroup: 65532 
+      workspaces:
+      - name: shared-data
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 2Gi
+      - name: docker-credentials
+        secret:
+          secretName: docker-credentials
+      - name: ssh-creds
+        secret:
+          secretName: git-sshkey-secret
+          
+      params:
+      - name: repo-url
+        value: $(tt.params.repo-url)
+      - name: revision
+        value: $(tt.params.revision)
+      - name: submodules
+        value: $(tt.params.submodules)
+      - name: image-reference
+        value: $(tt.params.image-reference)
+      - name: context
+        value: $(tt.params.context)
+      - name: dockerfile
+        value: $(tt.params.dockerfile)

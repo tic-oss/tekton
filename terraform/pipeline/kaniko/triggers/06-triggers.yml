@@ -1,34 +1,34 @@
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
-  name: <%= pipelineName %>-trigger-binding
-  namespace: <%= pipelineName %>-namespace
+  name: azure-pipeline-trigger-binding
+  namespace: azure-pipeline-namespace
 spec:
   params:
   - name: revision
     value: $(body.head_commit.id)
   - name: repo-url
-    value: <%= repoURL %>
+    value: git@github.com:Nandiniperikala/spring.git
   - name: submodules
     value: "false"
   - name: image-reference
-    value: <%= imageURL %>
+    value: ticacr.azurecr.io/azure-go:latest
   - name: context
-    value: <%= PathtoContext %>
+    value: go
   - name: dockerfile
-    value: $(workspaces.source.path)/<%= PathtoDockerfile %>
+    value: $(workspaces.source.path)/go/Dockerfile
   
 ---
 
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerTemplate
 metadata:
-  name: <%= pipelineName %>-trigger-template
-  namespace: <%= pipelineName %>-namespace
+  name: azure-pipeline-trigger-template
+  namespace: azure-pipeline-namespace
 spec:
   params:
   - name: revision
-    default: <%= branch %>
+    default: main
   - name: repo-url
   - name: image-reference
   - name: submodules
@@ -39,11 +39,11 @@ spec:
   - apiVersion: tekton.dev/v1beta1
     kind: PipelineRun
     metadata:
-      generateName: <%= pipelineName %>-run-
+      generateName: azure-pipeline-run-
     spec:
-      serviceAccountName: <%= pipelineName %>-service-account
+      serviceAccountName: azure-pipeline-service-account
       pipelineRef:
-        name: <%= pipelineName %>
+        name: azure-pipeline
       podTemplate:
         securityContext:
           fsGroup: 65532 

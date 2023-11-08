@@ -1,8 +1,8 @@
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
-  name: <%= pipelineName %>-eventlistener-gateway
-  namespace: <%= pipelineName %>-namespace
+  name: azure-pipeline-eventlistener-gateway
+  namespace: azure-pipeline-namespace
 spec:
   selector:
     istio: ingressgateway
@@ -12,30 +12,30 @@ spec:
         name: http
         protocol: HTTP
       hosts:
-        - <%= domain %>
+        - shopt.gq
     - port:
         number: 80
         name: http2
         protocol: HTTP2
       hosts:
-        - <%= domain %>
+        - shopt.gq
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: <%= pipelineName %>-eventlistener-gw-virtualservice
-  namespace: <%= pipelineName %>-namespace
+  name: azure-pipeline-eventlistener-gw-virtualservice
+  namespace: azure-pipeline-namespace
 spec:
   hosts:
-    - <%= domain %>
+    - shopt.gq
   gateways:
-    - <%= pipelineName %>-eventlistener-gateway
+    - azure-pipeline-eventlistener-gateway
   http:
     - match:
         - uri:
             prefix: /
       route:
         - destination:
-            host: el-<%= pipelineName %>-eventlistener
+            host: el-azure-pipeline-eventlistener
             port:
               number: 8080
