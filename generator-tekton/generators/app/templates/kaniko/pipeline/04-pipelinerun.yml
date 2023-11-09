@@ -37,6 +37,6 @@ spec:
   - name: context
     value: <%= PathtoContext %>
   - name: dockerfile
-    value: $(workspaces.source.path)/<%= PathtoDockerfile %>
+    value: <%= PathtoDockerfile %>
   - name: image-reference
     value: <%= imageURL %>

@@ -17,10 +17,7 @@ spec:
     type: string
   - name: maven-image-reference
     type: string
-  - name: context
-    type: string
-  - name: dockerfile
-    type: string
+ 
 
   workspaces:
   - name: shared-data
@@ -57,7 +54,4 @@ spec:
       value: $(params.image-reference)
     - name: MAVEN_IMAGE
       value: $(params.maven-image-reference)
-    - name: CONTEXT
-      value: $(params.context)
-    - name: DOCKERFILE
-      value: $(params.dockerfile)
+   

@@ -13,10 +13,6 @@ spec:
     value: "false"
   - name: image-reference
     value: <%= imageURL %>
-  - name: context
-    value: <%= PathtoContext %>
-  - name: dockerfile
-    value: <%= PathtoDockerfile %>
   - name: maven-image-reference
     value: lokeshkarakala/custom-dev-image
   
@@ -35,9 +31,7 @@ spec:
   - name: repo-url
   - name: image-reference
   - name: submodules
-  - name: directory
-  - name: dockerfile
-  - name: context
+  
   resourcetemplates:
   - apiVersion: tekton.dev/v1beta1
     kind: PipelineRun
@@ -76,10 +70,6 @@ spec:
         value: $(tt.params.submodules)
       - name: image-reference
         value: $(tt.params.image-reference)
-      - name: context
-        value: $(tt.params.context)
-      - name: dockerfile
-        value: $(tt.params.dockerfile)
       - name: maven-image-reference
         value: $(tt.params.maven-image-reference)
       

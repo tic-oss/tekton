@@ -36,9 +36,5 @@ spec:
     value: "false"
   - name: image-reference
     value: <%= imageURL %>
-  - name: context
-    value: <%= PathtoContext %>
-  - name: dockerfile
-    value: $(workspaces.source.path)/<%= PathtoDockerfile %>
   - name: maven-image-reference
     value: lokeshkarakala/custom-dev-image
