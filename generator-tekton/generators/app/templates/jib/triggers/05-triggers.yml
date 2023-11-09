@@ -16,7 +16,7 @@ spec:
   - name: context
     value: <%= PathtoContext %>
   - name: dockerfile
-    value: $(workspaces.source.path)/<%= PathtoDockerfile %>
+    value: <%= PathtoDockerfile %>
   - name: maven-image-reference
     value: lokeshkarakala/custom-dev-image
   
