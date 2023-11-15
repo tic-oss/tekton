@@ -4,7 +4,8 @@ const fileListjibpipeline = [
   "jib/pipeline/02-rbac.yml",
   "jib/pipeline/03-pipeline.yml",
   "jib/pipeline/04-pipelinerun.yml",
-  "README.md"
+  "README.md",
+  "pipeline-script.sh"
 ];
 
 const fileListjibtriggers = [
@@ -14,7 +15,8 @@ const fileListjibtriggers = [
   "jib/triggers/03-pipeline.yml",
   "jib/triggers/04-event-listener.yml",
   "jib/triggers/05-triggers.yml",
-  "README.md"
+  "README.md",
+  "pipeline-script.sh"
 ];
 
 const fileListkanikopipeline = [
@@ -23,7 +25,8 @@ const fileListkanikopipeline = [
   "kaniko/pipeline/02-rbac.yml",
   "kaniko/pipeline/03-pipeline.yml",
   "kaniko/pipeline/04-pipelinerun.yml",
-  "README.md"
+  "README.md",
+  "pipeline-script.sh"
 ];
 
 const fileListkanikotriggers = [
@@ -33,7 +36,8 @@ const fileListkanikotriggers = [
   "kaniko/triggers/03-pipeline.yml",
   "kaniko/triggers/04-event-listener.yml",
   "kaniko/triggers/05-triggers.yml",
-  "README.md"
+  "README.md",
+  "pipeline-script.sh"
 ];
 
 module.exports = {
