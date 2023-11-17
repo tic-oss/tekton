@@ -48,11 +48,12 @@ let prompts = [
     default: "gjhygfkujyhglkioh;loi;ewtgreyh"
   },
   {
-    type: "input",
+    type: "list",
     name: "buildStrategy",
     message: "Enter your buildstrategy:",
     choices: ["jib", "kaniko"]
   },
+
   {
     type: "input",
     name: "cloudProvider",
@@ -60,12 +61,14 @@ let prompts = [
     choices: ["azure", "aws"]
   },
   {
+    when: props => props.buildStrategy === "kaniko",
     type: "input",
     name: "PathtoContext",
     message: "Enter your Docker file directory path:",
     default: "go"
   },
   {
+    when: props => props.buildStrategy === "kaniko",
     type: "input",
     name: "PathtoDockerfile",
     message: "Enter your Docker file path:",

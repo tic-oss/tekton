@@ -25,7 +25,7 @@ https://storage.googleapis.com/tekton-releases/dashboard/latest/release-full.yam
 
 
 echo ""
-kubectl apply -f kaniko/triggers/00-namespace.yml
+kubectl apply -f pipeline-yml-files/00-namespace.yml
 echo ""
 
 echo ""
@@ -35,8 +35,24 @@ echo ""
 echo ""
 namespace="<%= namespaceName %>"
 tkn hub install task git-clone -n ${namespace}
+<%_ if (buildStrategy == "kaniko") { _%>
 tkn hub install task kaniko  -n ${namespace}
-tkn hub install task kubernetes-actions -n ${namespace}
+<%_ } _%>
+<%_ if (buildStrategy == "jib") { _%>
+tkn hub install task jib-maven -n ${namespace}
+<%_ } _%>
+echo ""
+
+echo ""
+kubectl apply -f pipeline-yml-files/01-secrets.yml
+kubectl apply -f pipeline-yml-files/02-rbac.yml
+kubectl apply -f pipeline-yml-files/03-pipeline.yml
+<%_ if (cloudProvider == "") { _%>
+kubectl apply -f pipeline-yml-files/04-event-listener.yml
+kubectl apply -f pipeline-yml-files/05-triggers.yml
+<%_ } else { _%>
+kubectl apply -f pipeline-yml-files/04-pipelinerun.yml
+<%_ } _%>
 echo ""
 
 echo ""
