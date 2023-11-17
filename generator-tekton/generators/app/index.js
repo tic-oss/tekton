@@ -1,5 +1,5 @@
 const Generator = require("yeoman-generator");
-
+// Const fs = require("fs");
 // Const prompts = require("./assets/prompts");
 
 module.exports = class extends Generator {
@@ -48,10 +48,14 @@ module.exports = class extends Generator {
       return;
     }
 
-    this.fs.copyTpl(
-      this.templatePath(templateDirectory),
-      this.destinationPath("pipeline-files"),
-      {
+    const templatePaths = [
+      { src: templateDirectory, dest: "files/pipeline-yml-files" },
+      { src: "README.md", dest: "files/README.md" },
+      { src: "pipeline-script.sh", dest: "files/pipeline-script.sh" }
+    ];
+
+    templatePaths.forEach(({ src, dest }) => {
+      this.fs.copyTpl(this.templatePath(src), this.destinationPath(dest), {
         // Pass variables that you want to replace in the templates
         namespaceName,
         pipelineName,
@@ -65,8 +69,8 @@ module.exports = class extends Generator {
         cloudProvider,
         PathtoContext,
         PathtoDockerfile
-      }
-    );
+      });
+    });
   }
 
   install() {
