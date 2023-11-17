@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
   generateName: <%= pipelineName %>-run-
-  namespace: <%= pipelineName %>-namespace
+  namespace: <%= namespaceName %>
 spec:
   serviceAccountName: <%= pipelineName %>-service-account
   pipelineRef:
@@ -35,6 +35,6 @@ spec:
   - name: submodules
     value: "false"
   - name: image-reference
-    value: <%= imageURL %>
+    value: <%= imageRepositoryURL %>
   - name: maven-image-reference
     value: lokeshkarakala/custom-dev-image

@@ -1,62 +1,76 @@
 const Generator = require("yeoman-generator");
-const path = require("path");
-const fs = require("fs");
 
-const {
-  fileListjibpipeline,
-  fileListjibtriggers,
-  fileListkanikopipeline,
-  fileListkanikotriggers
-} = require("./assets/filesList");
+// Const prompts = require("./assets/prompts");
 
 module.exports = class extends Generator {
-  constructor(args, opts) {
-    super(args, opts);
-
-    if (opts.file) {
-      const filePath = path.resolve(opts.file);
-      const fileContents = fs.readFileSync(filePath, "utf8");
-      const options = JSON.parse(JSON.stringify(fileContents));
-      this.options = options;
-    }
-  }
-
-  writing() {
-    const copyOpts = {
-      globOptions: {
-        ignore: []
-      }
-    };
-
-    const options = JSON.parse(this.options);
-    options.onRegistry = Boolean(options.Registry !== undefined);
-    if (options.buildStrategy === "jib") {
-      const fileList = options.domain
-        ? fileListjibtriggers
-        : fileListjibpipeline;
-      this._fileHelper(fileList, options, copyOpts);
-    }
-
-    if (options.buildStrategy === "kaniko") {
-      const fileList = options.domain
-        ? fileListkanikotriggers
-        : fileListkanikopipeline;
-      this._fileHelper(fileList, options, copyOpts);
-    }
-  }
-
-  _fileHelper(fileList, opts, copyOpts) {
-    fileList.forEach(file => {
-      this.fs.copyTpl(
-        this.templatePath(file),
-        this.destinationPath(`pipeline/${file}`),
-        opts,
-        copyOpts
-      );
+  prompting() {
+    // Use the prompts from prompt.js
+    return this.prompt(require("./assets/prompts")).then(props => {
+      // Store the user's answers in the context
+      this.props = props;
     });
   }
 
+  writing() {
+    // You can access the user's answers using this.props
+    const {
+      namespaceName,
+      pipelineName,
+      dockerConfig,
+      repoURL,
+      branch,
+      imageRepositoryURL,
+      deployKey,
+      sshConfig,
+      buildStrategy,
+      cloudProvider,
+      PathtoContext,
+      PathtoDockerfile
+    } = this.props;
+
+    let templateDirectory;
+
+    if (buildStrategy === "jib") {
+      if (cloudProvider) {
+        templateDirectory = "jib/triggers";
+      } else {
+        templateDirectory = "jib/pipeline";
+      }
+    } else if (buildStrategy === "kaniko") {
+      if (cloudProvider) {
+        templateDirectory = "kaniko/triggers";
+      } else {
+        templateDirectory = "kaniko/pipeline";
+      }
+    } else {
+      // Handle other build strategies or provide a default
+      this.log("Unsupported build strategy. No files generated.");
+      return;
+    }
+
+    this.fs.copyTpl(
+      this.templatePath(templateDirectory),
+      this.destinationPath("pipeline-files"),
+      {
+        // Pass variables that you want to replace in the templates
+        namespaceName,
+        pipelineName,
+        dockerConfig,
+        repoURL,
+        branch,
+        imageRepositoryURL,
+        deployKey,
+        sshConfig,
+        buildStrategy,
+        cloudProvider,
+        PathtoContext,
+        PathtoDockerfile
+      }
+    );
+  }
+
   install() {
+    // Install dependencies or perform other installation tasks if needed
     this.log("files Generation completed ...");
   }
 };

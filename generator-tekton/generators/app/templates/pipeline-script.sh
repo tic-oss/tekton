@@ -1,4 +1,4 @@
-/bin/bash
+# /bin/bash
 
 echo ""
 echo "Installing tekton cli."
@@ -33,9 +33,10 @@ echo "Installing requrired tasks from tekton hub"
 echo ""
 
 echo ""
-tkn hub install task git-clone -n azure-pipeline-namespace
-tkn hub install task kaniko  -n azure-pipeline-namespace
-tkn hub install task kubernetes-actions -n azure-pipeline-namespace
+namespace="<%= namespaceName %>"
+tkn hub install task git-clone -n ${namespace}
+tkn hub install task kaniko  -n ${namespace}
+tkn hub install task kubernetes-actions -n ${namespace}
 echo ""
 
 echo ""

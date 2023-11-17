@@ -2,7 +2,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
   name: <%= pipelineName %>-trigger-binding
-  namespace: <%= pipelineName %>-namespace
+  namespace: <%= namespaceName %>
 spec:
   params:
   - name: revision
@@ -12,7 +12,7 @@ spec:
   - name: submodules
     value: "false"
   - name: image-reference
-    value: <%= imageURL %>
+    value: <%= imageRepositoryURL %>
   - name: context
     value: <%= PathtoContext %>
   - name: dockerfile
@@ -24,7 +24,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerTemplate
 metadata:
   name: <%= pipelineName %>-trigger-template
-  namespace: <%= pipelineName %>-namespace
+  namespace: <%= namespaceName %>
 spec:
   params:
   - name: revision

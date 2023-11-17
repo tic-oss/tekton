@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: <%= pipelineName %>
-  namespace: <%= pipelineName %>-namespace
+  namespace: <%= namespaceName %>
 spec:
   description: | 
     This pipeline clones a git repo and builds a Spring Boot

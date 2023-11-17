@@ -1,21 +1,27 @@
 let prompts = [
   {
     type: "input",
-    name: "pipeline_name",
-    message: "Enter the pipeline name:",
+    name: "namespaceName",
+    message: "Enter the namespace name:",
     default: "tf-basic"
   },
   {
     type: "input",
-    name: "config-json",
-    message: "Encode and Enter your config-json:",
+    name: "pipelineName",
+    message: "Enter the pipeline name:",
+    default: "tf-basic-pipeline"
+  },
+  {
+    type: "input",
+    name: "dockerConfig",
+    message: "Enter your base64-encoded config-json:",
     default: "shggjhgjkglhfkjhk"
   },
   {
     type: "input",
     name: "repoURL",
     message: "Enter your git repository ssh URL:",
-    default: "repo URL"
+    default: "git@github.com:Nandiniperikala/spring.git"
   },
   {
     type: "input",
@@ -25,51 +31,45 @@ let prompts = [
   },
   {
     type: "input",
-    name: "registryUserName",
-    message: "Enter your image registry Name:",
-    choices: ["ecr", "acr", "gitpackage", "docker-hub"]
-  },
-  {
-    when: props => props.registryName === "ecr",
-    type: "input",
-    name: "registryURI",
-    message: "Enter your registry URI:"
-  },
-  {
-    when: props => props.registryName === "acr",
-    type: "input",
-    name: "registryName",
-    message: "Enter your registry name:"
-  },
-  {
-    when: props => props.registryName === "gitpackage",
-    type: "input",
-    name: "registryName",
-    message: "Enter your git hub user name:"
-  },
-  {
-    when: props => props.registryName === "docker-hub",
-    type: "input",
-    name: "registryName",
-    message: "Enter your docker hub user name:"
-  },
-  {
-    type: "input",
-    name: "imageName",
-    message: "Enter Image name:",
-    default: "tekton"
+    name: "imageRepositoryURL",
+    message: "Enter your image repository URL Name:",
+    default: "ticacr.azurecr.io/azure-go:latest"
   },
   {
     type: "input",
     name: "deployKey",
-    message: "Encode and Enter your deployKey:",
+    message: "Enter your base64-encoded ssh privateKey:",
     default: "gjhygfkujyhglkioh;loi;ewtgreyh"
   },
   {
     type: "input",
-    name: "sshconfig",
-    message: "Encode and Enter your ssh_config file:",
+    name: "sshConfig",
+    message: "Enter your base64-encoded ssh_config file:",
     default: "gjhygfkujyhglkioh;loi;ewtgreyh"
+  },
+  {
+    type: "input",
+    name: "buildStrategy",
+    message: "Enter your buildstrategy:",
+    choices: ["jib", "kaniko"]
+  },
+  {
+    type: "input",
+    name: "cloudProvider",
+    message: "Enter your cloudProvider:",
+    choices: ["azure", "aws"]
+  },
+  {
+    type: "input",
+    name: "PathtoContext",
+    message: "Enter your Docker file directory path:",
+    default: "go"
+  },
+  {
+    type: "input",
+    name: "PathtoDockerfile",
+    message: "Enter your Docker file path:",
+    default: "go/Dockerfile"
   }
 ];
 
