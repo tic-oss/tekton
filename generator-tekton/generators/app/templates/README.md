@@ -1,10 +1,15 @@
-<h3><center>Clone, build and push the images to docker registry using Tekton</center></h3>
+<h3><center>Clone, build and push the images to registry using Tekton</center></h3>
 
 
+<%_ if (buildStrategy == "kaniko") { _%>
 <h4>Set up a Pipeline that builds a Docker image using Kaniko on your kubernetes cluster</h4>
+<%_ } _%>
 
+<%_ if (buildStrategy == "jib") { _%>
 <h4>Set up a Pipeline that builds a Docker image using jib on your kubernetes cluster</h4>
+<%_ } _%>
 <ol>
+
 
   <li>Retrieve the source code.</li>
   <li>Build and push the source code into a Docker image.</li>

@@ -1,9 +1,36 @@
 const Generator = require("yeoman-generator");
-// Const fs = require("fs");
-// Const prompts = require("./assets/prompts");
+const path = require("path");
+const fs = require("fs");
+
+// Const {
+//   fileListjibpipeline,
+//   fileListjibtriggers,
+//   fileListkanikopipeline,
+//   fileListkanikotriggers
+// } = require("./assets/filesList");
 
 module.exports = class extends Generator {
+  constructor(args, opts) {
+    super(args, opts);
+
+    this.options = {};
+    this.props = {};
+
+    if (opts.file) {
+      const filePath = path.resolve(opts.file);
+      const fileContents = fs.readFileSync(filePath, "utf8");
+      this.options = JSON.parse(fileContents);
+      this.shouldPrompt = false;
+    } else {
+      this.shouldPrompt = true;
+    }
+  }
+
   prompting() {
+    if (!this.shouldPrompt) {
+      return; // Skip prompts if a file is provided
+    }
+
     // Use the prompts from prompt.js
     return this.prompt(require("./assets/prompts")).then(props => {
       // Store the user's answers in the context
@@ -12,38 +39,42 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    // You can access the user's answers using this.props
-    const {
+    const { options, props, shouldPrompt } = this;
+    let {
       namespaceName,
       pipelineName,
       dockerConfig,
       repoURL,
+      repoType,
       branch,
       imageRepositoryURL,
       deployKey,
       sshConfig,
-      buildStrategy,
-      cloudProvider,
       PathtoContext,
       PathtoDockerfile
-    } = this.props;
+    } = shouldPrompt ? props : options;
+
+    const {
+      buildStrategy: optionsBuildStrategy,
+      k8sEnvironment: optionsK8sEnvironment
+    } = options;
+    const {
+      buildStrategy: propsBuildStrategy,
+      k8sEnvironment: propsK8sEnvironment
+    } = props;
+
+    const buildStrategy = optionsBuildStrategy || propsBuildStrategy;
+    const k8sEnvironment = optionsK8sEnvironment || propsK8sEnvironment;
 
     let templateDirectory;
 
     if (buildStrategy === "jib") {
-      if (cloudProvider) {
-        templateDirectory = "jib/triggers";
-      } else {
-        templateDirectory = "jib/pipeline";
-      }
+      templateDirectory =
+        k8sEnvironment === "minikube" ? "jib/pipeline" : "jib/triggers";
     } else if (buildStrategy === "kaniko") {
-      if (cloudProvider) {
-        templateDirectory = "kaniko/triggers";
-      } else {
-        templateDirectory = "kaniko/pipeline";
-      }
+      templateDirectory =
+        k8sEnvironment === "minikube" ? "kaniko/pipeline" : "kaniko/triggers";
     } else {
-      // Handle other build strategies or provide a default
       this.log("Unsupported build strategy. No files generated.");
       return;
     }
@@ -56,25 +87,34 @@ module.exports = class extends Generator {
 
     templatePaths.forEach(({ src, dest }) => {
       this.fs.copyTpl(this.templatePath(src), this.destinationPath(dest), {
-        // Pass variables that you want to replace in the templates
         namespaceName,
         pipelineName,
         dockerConfig,
         repoURL,
+        repoType,
         branch,
         imageRepositoryURL,
         deployKey,
         sshConfig,
         buildStrategy,
-        cloudProvider,
+        k8sEnvironment,
         PathtoContext,
         PathtoDockerfile
       });
     });
   }
 
+  _fileHelper(fileList, opts) {
+    fileList.forEach(file => {
+      this.fs.copyTpl(
+        this.templatePath(file),
+        this.destinationPath(`pipeline/${file}`),
+        opts
+      );
+    });
+  }
+
   install() {
-    // Install dependencies or perform other installation tasks if needed
     this.log("files Generation completed ...");
   }
 };

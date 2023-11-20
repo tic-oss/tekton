@@ -12,16 +12,38 @@ let prompts = [
     default: "tf-basic-pipeline"
   },
   {
-    type: "input",
-    name: "dockerConfig",
-    message: "Enter your base64-encoded config-json:",
-    default: "shggjhgjkglhfkjhk"
+    type: "list",
+    name: "repoType",
+    message: "Enter your repository Type:",
+    choices: ["private", "public"]
   },
   {
+    when: props => props.repoType === "private",
     type: "input",
     name: "repoURL",
     message: "Enter your git repository ssh URL:",
     default: "git@github.com:Nandiniperikala/spring.git"
+  },
+  {
+    when: props => props.repoType === "public",
+    type: "input",
+    name: "repoURL",
+    message: "Enter your git repository https URL:",
+    default: "git@github.com:Nandiniperikala/spring.git"
+  },
+  {
+    when: props => props.repoType === "private",
+    type: "input",
+    name: "deployKey",
+    message: "Enter your base64-encoded ssh privateKey:",
+    default: "gjhygfkujyhglkioh;loi;ewtgreyh"
+  },
+  {
+    when: props => props.repoType === "private",
+    type: "input",
+    name: "sshConfig",
+    message: "Enter your base64-encoded ssh_config file:",
+    default: "gjhygfkujyhglkioh;loi;ewtgreyh"
   },
   {
     type: "input",
@@ -30,35 +52,10 @@ let prompts = [
     default: "main"
   },
   {
-    type: "input",
-    name: "imageRepositoryURL",
-    message: "Enter your image repository URL Name:",
-    default: "ticacr.azurecr.io/azure-go:latest"
-  },
-  {
-    type: "input",
-    name: "deployKey",
-    message: "Enter your base64-encoded ssh privateKey:",
-    default: "gjhygfkujyhglkioh;loi;ewtgreyh"
-  },
-  {
-    type: "input",
-    name: "sshConfig",
-    message: "Enter your base64-encoded ssh_config file:",
-    default: "gjhygfkujyhglkioh;loi;ewtgreyh"
-  },
-  {
     type: "list",
     name: "buildStrategy",
     message: "Enter your buildstrategy:",
     choices: ["jib", "kaniko"]
-  },
-
-  {
-    type: "input",
-    name: "cloudProvider",
-    message: "Enter your cloudProvider:",
-    choices: ["azure", "aws"]
   },
   {
     when: props => props.buildStrategy === "kaniko",
@@ -73,6 +70,24 @@ let prompts = [
     name: "PathtoDockerfile",
     message: "Enter your Docker file path:",
     default: "go/Dockerfile"
+  },
+  {
+    type: "input",
+    name: "dockerConfig",
+    message: "Enter your base64-encoded docker login config-json:",
+    default: "shggjhgjkglhfkjhk"
+  },
+  {
+    type: "input",
+    name: "imageRepositoryURL",
+    message: "Enter your image repository URL Name:",
+    default: "ticacr.azurecr.io/azure-go:latest"
+  },
+  {
+    type: "list",
+    name: "k8sEnvironment",
+    message: "Enter your k8sEnvironment:",
+    choices: ["azure", "aws", "minikube"]
   }
 ];
 

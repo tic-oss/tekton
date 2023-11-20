@@ -47,11 +47,11 @@ echo ""
 kubectl apply -f pipeline-yml-files/01-secrets.yml
 kubectl apply -f pipeline-yml-files/02-rbac.yml
 kubectl apply -f pipeline-yml-files/03-pipeline.yml
-<%_ if (cloudProvider == "") { _%>
+<%_ if (k8sEnvironment == "minikube") { _%>
+kubectl apply -f pipeline-yml-files/04-pipelinerun.yml
+<%_ } else { _%>
 kubectl apply -f pipeline-yml-files/04-event-listener.yml
 kubectl apply -f pipeline-yml-files/05-triggers.yml
-<%_ } else { _%>
-kubectl apply -f pipeline-yml-files/04-pipelinerun.yml
 <%_ } _%>
 echo ""
 
