@@ -1,0 +1,90 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: k8s-pipeline
+  namespace: k8s-namespace
+spec:
+  description: | 
+    This pipeline clones a git repo, builds a Docker image with Kaniko and
+    pushes it to a registry
+  params:
+  - name: repo-url
+    type: string
+  - name: revision
+    type: string
+  - name: submodules
+    type: string
+  - name: server
+    type: string
+  - name: subject
+    type: string
+  - name: body
+    type: string
+  - name: sender
+    type: string
+  - name: recipients
+    type: string
+ 
+ 
+  
+  workspaces:
+  - name: shared-data
+  - name: ssh-creds
+
+  tasks:
+  - name: fetch-source
+    taskRef:
+      name: git-clone
+    workspaces:
+    - name: output
+      workspace: shared-data
+    - name: ssh-directory
+      workspace: ssh-creds
+    params:
+    - name: url
+      value: $(params.repo-url)
+    - name: revision
+      value: $(params.revision)
+    - name: submodules
+      value: $(params.submodules)
+  
+  - name: send-mail
+    runAfter: ["fetch-source"]
+    taskRef:
+      name: sendmail
+    params:
+    - name: server
+      value: $(params.server)
+    - name: subject
+      value: $(params.subject)
+    - name: body
+      value: $(params.body)
+    - name: sender
+      value: $(params.sender)
+    - name: recipients
+      value: $(params.recipients)
+    
+
+  
+      
+
+  
+ 
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+      
+ 
+   
+ 
