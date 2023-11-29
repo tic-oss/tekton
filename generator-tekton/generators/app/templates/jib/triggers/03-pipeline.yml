@@ -47,8 +47,6 @@ spec:
     workspaces:
     - name: source
       workspace: shared-data
-    - name: dockerconfig
-      workspace: docker-credentials
     params:
     - name: IMAGE
       value: $(params.image-reference)

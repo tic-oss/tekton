@@ -2,13 +2,6 @@ const Generator = require("yeoman-generator");
 const path = require("path");
 const fs = require("fs");
 
-// Const {
-//   fileListjibpipeline,
-//   fileListjibtriggers,
-//   fileListkanikopipeline,
-//   fileListkanikotriggers
-// } = require("./assets/filesList");
-
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
@@ -28,12 +21,10 @@ module.exports = class extends Generator {
 
   prompting() {
     if (!this.shouldPrompt) {
-      return; // Skip prompts if a file is provided
+      return;
     }
 
-    // Use the prompts from prompt.js
     return this.prompt(require("./assets/prompts")).then(props => {
-      // Store the user's answers in the context
       this.props = props;
     });
   }
