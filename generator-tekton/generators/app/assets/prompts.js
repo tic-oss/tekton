@@ -55,17 +55,27 @@ let prompts = [
     type: "list",
     name: "buildStrategy",
     message: "Enter your buildstrategy:",
-    choices: ["jib", "kaniko"]
+    choices: ["Dockerfile", "jib-maven(for java)"]
   },
   {
-    when: props => props.buildStrategy === "kaniko",
+    type: "list",
+    name: "DockerfilePath",
+    message: "Enter your buildstrategy:",
+    choices: ["root", "Directory"]
+  },
+  {
+    when: props =>
+      props.buildStrategy === "Dockerfile" &&
+      props.DockerfilePath === "Directory",
     type: "input",
     name: "PathtoContext",
     message: "Enter your Docker file directory path:",
     default: "go"
   },
   {
-    when: props => props.buildStrategy === "kaniko",
+    when: props =>
+      props.buildStrategy === "Dockerfile" &&
+      props.DockerfilePath === "Directory",
     type: "input",
     name: "PathtoDockerfile",
     message: "Enter your Docker file path:",

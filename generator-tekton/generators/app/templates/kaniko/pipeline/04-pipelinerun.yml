@@ -34,9 +34,11 @@ spec:
     value: <%= branch %> 
   - name: submodules
     value: "false"
+  <%_ if (DockerfilePath == "Docker") { _%>
   - name: context
     value: <%= PathtoContext %>
   - name: dockerfile
     value: <%= PathtoDockerfile %>
+  <%_ } _%>
   - name: image-reference
     value: <%= imageRepositoryURL %>

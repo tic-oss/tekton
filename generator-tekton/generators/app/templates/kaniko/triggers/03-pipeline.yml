@@ -16,10 +16,13 @@ spec:
     type: string
   - name: image-reference
     type: string
+  <%_ if (DockerfilePath == "Docker") { _%>
   - name: context
     type: string
   - name: dockerfile
     type: string
+  <%_ } _%>
+  
   
   workspaces:
   - name: shared-data
@@ -55,7 +58,9 @@ spec:
     params:
     - name: IMAGE
       value: $(params.image-reference)
+    <%_ if (DockerfilePath == "Docker") { _%>
     - name: CONTEXT
       value: $(params.context)
     - name: DOCKERFILE
       value: $(params.dockerfile)
+    <%_ } _%>

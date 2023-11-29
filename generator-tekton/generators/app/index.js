@@ -41,6 +41,7 @@ module.exports = class extends Generator {
       imageRepositoryURL,
       deployKey,
       sshConfig,
+      DockerfilePath,
       PathtoContext,
       PathtoDockerfile
     } = shouldPrompt ? props : options;
@@ -59,10 +60,10 @@ module.exports = class extends Generator {
 
     let templateDirectory;
 
-    if (buildStrategy === "jib") {
+    if (buildStrategy === "jib-maven(for java)") {
       templateDirectory =
         k8sEnvironment === "minikube" ? "jib/pipeline" : "jib/triggers";
-    } else if (buildStrategy === "kaniko") {
+    } else if (buildStrategy === "Dockerfile") {
       templateDirectory =
         k8sEnvironment === "minikube" ? "kaniko/pipeline" : "kaniko/triggers";
     } else {
@@ -90,6 +91,7 @@ module.exports = class extends Generator {
         buildStrategy,
         k8sEnvironment,
         PathtoContext,
+        DockerfilePath,
         PathtoDockerfile
       });
     });

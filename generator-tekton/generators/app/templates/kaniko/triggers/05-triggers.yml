@@ -13,10 +13,12 @@ spec:
     value: "false"
   - name: image-reference
     value: <%= imageRepositoryURL %>
+  <%_ if (DockerfilePath == "Docker") { _%>
   - name: context
     value: <%= PathtoContext %>
   - name: dockerfile
     value: <%= PathtoDockerfile %>
+  <%_ } _%>
   
 ---
 
@@ -32,8 +34,10 @@ spec:
   - name: repo-url
   - name: image-reference
   - name: submodules
+  <%_ if (DockerfilePath == "Docker") { _%>
   - name: dockerfile
   - name: context
+  <%_ } _%>
   resourcetemplates:
   - apiVersion: tekton.dev/v1beta1
     kind: PipelineRun
@@ -71,7 +75,9 @@ spec:
         value: $(tt.params.submodules)
       - name: image-reference
         value: $(tt.params.image-reference)
+      <%_ if (DockerfilePath == "Docker") { _%>
       - name: context
         value: $(tt.params.context)
       - name: dockerfile
         value: $(tt.params.dockerfile)
+      <%_ } _%>
