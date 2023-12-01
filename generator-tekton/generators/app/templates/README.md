@@ -1,25 +1,5 @@
 <h3>Tekton Generator</h3>
-<%_ if (buildStrategy == "kaniko") { _%>
-<h4>Set up a Pipeline that builds a Docker image using Kaniko on your kubernetes cluster</h4>
-<%_ } _%>
-
-<%_ if (buildStrategy == "jib") { _%>
-<h4>Set up a Pipeline that builds a Docker image using jib on your kubernetes cluster</h4>
-<%_ } _%>
-<ol>
-
-
-  <li>Retrieve the source code.</li>
-  <li>Build and push the source code into a Docker image.</li>
-  <li>Push the image to the specified repository.</li>
-</ol>
-
-<h4>Set up an EventListener that accepts and processes GitHub push events.</h4>
-<h4>Set up a TriggerTemplate that instantiates a PipelineResource and executes a PipelineRun and its associated 'TaskRuns' when the EventListener detects the push event from a GitHub repository.</h4>
-
-<h4>Run the completed stack to experience Tekton Triggers in action.</h4>
-
-
+To run the files manually, first install few prerequisites<br>
 <h3>Prerequisites:</h3>
 <ol>
    <li>Have a kubernetes cluster running and install kubectl</li>
@@ -34,42 +14,61 @@
    <li>Install tekton Dashboard</li> 
      kubectl apply --filename \
         https://storage.googleapis.com/tekton-releases/dashboard/latest/release-full.yaml
+   <li>Install Tekton CLI, tkn on your machine</h3>
+To install tkn, follow <a href="https://tekton.dev/docs/cli/">https://tekton.dev/docs/cli/ </a> </li>
 </ol>
+git-clone is the task from tekton-hub for cloning the git repositories.
+For more information, go through https://hub.tekton.dev/tekton/task/git-clone<br>
+To clone the git repository inside your workspace, install git clone task using<br>
 
-<h4>When all components show Running the STATUS column the installation is complete.</h4>
+```kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-clone/0.9/git-clone.yaml```
+or
+```tkn hub install task git-clone```
+<br><br>
+<%_ if (buildStrategy == "kaniko") { _%>
+Kaniko is the task for building and pushing images to the required workspace.
+For more information on kaniko, visit https://hub.tekton.dev/tekton/task/kaniko
+<h4>To set up a Pipeline that builds a Docker image using Kaniko on your kubernetes cluster</h4>
+<%_ } _%>
+
+<%_ if (buildStrategy == "jib") { _%>
+<h4>To set up a Pipeline that builds a Docker image using jib on your kubernetes cluster</h4>
+<%_ } _%>
+<ol>
 
 
+  <li>Retrieve the source code.</li>
+  <li>Build and push the source code into a Docker image.</li>
+  <li>Push the image to the specified repository.</li>
+</ol>
+<h4>To activate triggers, </h4>
+<ul>
+     <li>Set up an EventListener that accepts and processes GitHub push events.</li>
+     <li>Set up a TriggerTemplate that instantiates a PipelineResource and executes a PipelineRun and its associated 'TaskRuns' when the EventListener detects the push event from a GitHub repository.</li>
+     <li>Run the completed stack to experience Tekton Triggers in action.</li>
+</ul>
+When all components show Running the STATUS column the installation is complete.
 
-<h3>Access Tekton Dashboard</h3>
-<h5>The Tekton Dashboard is not exposed outside the cluster by default, but we can access it by port-forwarding to the tekton-dashboard Service on port 9097</h5>
+<h5>Access Tekton Dashboard</h5>
+The Tekton Dashboard is not exposed outside the cluster by default, but we can access it by port-forwarding to the tekton-dashboard Service on port 9097
     
      kubectl port-forward -n tekton-pipelines service/tekton-dashboard 9097:9097
      
-<h5>You can now open the Dashboard in your browser at http://localhost:9097</h5>
-                                                  
-<h3>Install Tekton CLI, tkn on your machine</h3>
-<h4>To install tkn, follow href https://tekton.dev/docs/cli/</h4>
-   
-<h4>Lets run the 00-namespace.yml file to create namespace<h4>
+You can now open the Dashboard in your browser at <a href="http://localhost:9097">http://localhost:9097</a>
+<ul>
+<li>Lets run the 00-namespace.yml file to create namespace</li>
 
       kubectl apply -f 00-namespace.yml
      
-<h3>Install the git-clone and kaniko tasks</h3>
+<li>Install the git-clone and kaniko tasks</li>
 
      tkn hub install task git-clone -n (namespace)
      tkn hub install task kaniko -n (namespace)
 
-<h3>Install the git-clone and jib-maven or jib-gradle (jib works with Maven and Gradle projects tasks</h3>
+<li>Install the git-clone and jib-maven or jib-gradle. jib works with Maven and Gradle projects tasks</li>
      
     tkn hub install task git-clone -n (namespace)
     tkn hub install task jib -n (namespace)
-<ol>
-<li>git-clone is the task from tekton-hub for cloning the git repositories.
-For more information, go through https://hub.tekton.dev/tekton/task/git-clone </li>
-<li>Kaniko is the task for building and pushing images to the required workspace.
-For more information on kaniko, visit https://hub.tekton.dev/tekton/task/kaniko </li>
-</ol>
-
 
 <h3>Run the yml files for Pipeline</h3>
 
