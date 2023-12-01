@@ -1,6 +1,4 @@
-<h3><center>Clone, build and push the images to registry using Tekton</center></h3>
-
-
+<h3>Tekton Generator</h3>
 <%_ if (buildStrategy == "kaniko") { _%>
 <h4>Set up a Pipeline that builds a Docker image using Kaniko on your kubernetes cluster</h4>
 <%_ } _%>
