@@ -33,22 +33,20 @@ echo "Installing requrired tasks from tekton hub"
 echo ""
 
 echo ""
-namespace="k8s-namespace"
+namespace="tekton-namespace"
 tkn hub install task git-clone -n ${namespace}
-tkn hub install task kaniko  -n ${namespace}
-tkn hub install task sendmail  -n ${namespace}
+tkn hub install task kaniko -n ${namespace}
 echo ""
 
 echo ""
 kubectl apply -f pipeline-yml-files/01-secrets.yml
 kubectl apply -f pipeline-yml-files/02-rbac.yml
 kubectl apply -f pipeline-yml-files/03-pipeline.yml
-kubectl apply -f pipeline-yml-files/04-event-listener.yml
-kubectl apply -f pipeline-yml-files/05-triggers.yml
+kubectl create -f pipeline-yml-files/04-pipelinerun.yml
 echo ""
 
 echo ""
-echo "Access tekton dashboard in web http://localhost:9097"
+echo "Access tekton dashboard in web http://localhost:9097."
 echo ""
 
 kubectl port-forward -n tekton-pipelines service/tekton-dashboard 9097:9097

@@ -38,3 +38,9 @@ spec:
     value: <%= imageRepositoryURL %>
   - name: maven-image-reference
     value: lokeshkarakala/custom-dev-image
+  <%_ if (PathToPomFile == "Directory") { _%>
+  - name: DIRECTORY
+    value: ./policies
+  <%_ } _%>
+   
+  

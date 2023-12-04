@@ -15,6 +15,10 @@ spec:
     value: <%= imageRepositoryURL %>
   - name: maven-image-reference
     value: lokeshkarakala/custom-dev-image
+  <%_ if (PathToPomFile == "Directory") { _%>
+  - name: directory
+    value: ./policies
+  <%_ } _%>
   
 ---
 
@@ -31,6 +35,7 @@ spec:
   - name: repo-url
   - name: image-reference
   - name: submodules
+  - name: directory
   
   resourcetemplates:
   - apiVersion: tekton.dev/v1beta1
@@ -72,4 +77,8 @@ spec:
         value: $(tt.params.image-reference)
       - name: maven-image-reference
         value: $(tt.params.maven-image-reference)
+      <%_ if (PathToPomFile == "Directory") { _%>
+      - name: directory
+        value: $(tt.params.directory)
+      <%_ } _%>
       

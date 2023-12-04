@@ -28,6 +28,8 @@ echo ""
 kubectl apply -f pipeline-yml-files/00-namespace.yml
 echo ""
 
+sleep 60
+
 echo ""
 echo "Installing requrired tasks from tekton hub"
 echo ""
@@ -35,20 +37,22 @@ echo ""
 echo ""
 namespace="<%= namespaceName %>"
 tkn hub install task git-clone -n ${namespace}
-<%_ if (buildStrategy == "kaniko") { _%>
+<%_ if (buildStrategy == "Dockerfile") { _%>
 tkn hub install task kaniko  -n ${namespace}
 <%_ } _%>
-<%_ if (buildStrategy == "jib") { _%>
+<%_ if (buildStrategy == "jib-maven(for java)") { _%>
 tkn hub install task jib-maven -n ${namespace}
 <%_ } _%>
 echo ""
+
+sleep 60
 
 echo ""
 kubectl apply -f pipeline-yml-files/01-secrets.yml
 kubectl apply -f pipeline-yml-files/02-rbac.yml
 kubectl apply -f pipeline-yml-files/03-pipeline.yml
 <%_ if (k8sEnvironment == "minikube") { _%>
-kubectl apply -f pipeline-yml-files/04-pipelinerun.yml
+kubectl create -f pipeline-yml-files/04-pipelinerun.yml
 <%_ } else { _%>
 kubectl apply -f pipeline-yml-files/04-event-listener.yml
 kubectl apply -f pipeline-yml-files/05-triggers.yml
@@ -56,7 +60,7 @@ kubectl apply -f pipeline-yml-files/05-triggers.yml
 echo ""
 
 echo ""
-echo "Access tekton dashboard in web http://localhost:9097."
+echo "Access tekton dashboard in web http://localhost:9097"
 echo ""
 
 kubectl port-forward -n tekton-pipelines service/tekton-dashboard 9097:9097

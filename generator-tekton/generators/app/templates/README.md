@@ -88,7 +88,7 @@ For more information on kaniko, visit https://hub.tekton.dev/tekton/task/jib-mav
 <%_ if (k8sEnvironment == "minikube") { _%><br>
 <li>Create the pipelinerun using the following command:</li>
 
-     kubectl apply -f pipeline-yml-files/04-pipelinerun.yml -n <namespace name> 
+     kubectl create -f pipeline-yml-files/04-pipelinerun.yml -n <namespace name> 
 <%_ } else { _%> <br>
 <li>Create the eventlistener using the following command:</li>
 

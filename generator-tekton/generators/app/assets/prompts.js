@@ -3,13 +3,13 @@ let prompts = [
     type: "input",
     name: "namespaceName",
     message: "Enter the namespace name:",
-    default: "tf-basic"
+    default: "tekton-namespace"
   },
   {
     type: "input",
     name: "pipelineName",
     message: "Enter the pipeline name:",
-    default: "tf-basic-pipeline"
+    default: "tekton-pipeline"
   },
   {
     type: "list",
@@ -29,7 +29,7 @@ let prompts = [
     type: "input",
     name: "repoURL",
     message: "Enter your git repository https URL:",
-    default: "git@github.com:Nandiniperikala/spring.git"
+    default: "https://github.com/Nandiniperikala/private.git"
   },
   {
     when: props => props.repoType === "private",
@@ -58,9 +58,10 @@ let prompts = [
     choices: ["Dockerfile", "jib-maven(for java)"]
   },
   {
+    when: props => props.buildStrategy === "Dockerfile",
     type: "list",
     name: "DockerfilePath",
-    message: "Enter your buildstrategy:",
+    message: "Enter your DockerfilePath:",
     choices: ["root", "Directory"]
   },
   {
@@ -79,6 +80,22 @@ let prompts = [
     type: "input",
     name: "PathtoDockerfile",
     message: "Enter your Docker file path:",
+    default: "go/Dockerfile"
+  },
+  {
+    when: props => props.buildStrategy === "jib-maven(for java)",
+    type: "list",
+    name: "PathToPomFile",
+    message: "Enter your PathToPomFile:",
+    choices: ["root", "Directory"]
+  },
+  {
+    when: props =>
+      props.buildStrategy === "jib-maven(for java)" &&
+      props.PathToPomFile === "Directory",
+    type: "input",
+    name: "PathToPomFile",
+    message: "Enter your Pom.xml directory Path:",
     default: "go/Dockerfile"
   },
   {

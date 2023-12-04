@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: k8s-pipeline-service-account
-  namespace: k8s-namespace
+  name: tekton-pipeline-service-account
+  namespace: tekton-namespace
 secrets:
   - name: git-sshkey-secret
-  - name: email-secret
+  - name: docker-credentials
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: tekton-k8s-pipeline-role
-  namespace: k8s-namespace
+  name: tekton-tekton-pipeline-role
+  namespace: tekton-namespace
 rules:
 # EventListeners need to be able to fetch all namespaced resources
 - apiGroups: ["triggers.tekton.dev"]
@@ -36,22 +36,22 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: tekton-k8s-pipeline-binding
-  namespace: k8s-namespace
+  name: tekton-tekton-pipeline-binding
+  namespace: tekton-namespace
 subjects:
 - kind: ServiceAccount
-  name: k8s-pipeline-service-account
-  namespace: k8s-namespace
+  name: tekton-pipeline-service-account
+  namespace: tekton-namespace
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: tekton-k8s-pipeline-role
+  name: tekton-tekton-pipeline-role
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: tekton-k8s-pipeline-clusterrole
-  namespace: k8s-namespace
+  name: tekton-tekton-pipeline-clusterrole
+  namespace: tekton-namespace
 rules:
   # EventListeners need to be able to fetch any clustertriggerbindings
 - apiGroups: ["triggers.tekton.dev"]
@@ -61,22 +61,22 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: tekton-k8s-pipeline-clusterbinding
-  namespace: k8s-namespace
+  name: tekton-tekton-pipeline-clusterbinding
+  namespace: tekton-namespace
 subjects:
 - kind: ServiceAccount
-  name: k8s-pipeline-service-account
-  namespace: k8s-namespace
+  name: tekton-pipeline-service-account
+  namespace: tekton-namespace
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: tekton-k8s-pipeline-clusterrole
+  name: tekton-tekton-pipeline-clusterrole
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: tekton-k8s-pipeline-kubectl-role
-  namespace: k8s-namespace
+  name: tekton-tekton-pipeline-kubectl-role
+  namespace: tekton-namespace
 rules:
 - apiGroups:
   - "*"
@@ -97,42 +97,41 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: tekton-k8s-pipeline-kubectl-binding
-  namespace: k8s-namespace
+  name: tekton-tekton-pipeline-kubectl-binding
+  namespace: tekton-namespace
 subjects:
 - kind: ServiceAccount
-  name: k8s-pipeline-service-account
-  namespace: k8s-namespace
+  name: tekton-pipeline-service-account
+  namespace: tekton-namespace
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: tekton-k8s-pipeline-kubectl-role
+  name: tekton-tekton-pipeline-kubectl-role
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  namespace: k8s-namespace
-  name: tekton-k8s-pipeline-ssh-role
+  namespace: tekton-namespace
+  name: tekton-tekton-pipeline-ssh-role
 rules:
 - apiGroups: [""]
   resources: ["secrets"]
   verbs: ["get", "list", "watch"]
 
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: tekton-k8s-pipeline-ssh-binding
-  namespace: k8s-namespace
+  name: tekton-tekton-pipeline-ssh-binding
+  namespace: tekton-namespace
 subjects:
 - kind: ServiceAccount
-  name: k8s-pipeline-service-account
-  namespace: k8s-namespace
+  name: tekton-pipeline-service-account
+  namespace: tekton-namespace
 roleRef:
   kind: Role
-  name: tekton-k8s-pipeline-ssh-role
+  name: tekton-tekton-pipeline-ssh-role
   apiGroup: rbac.authorization.k8s.io
 
 ---
@@ -140,8 +139,8 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: tekton-k8s-pipeline-git-access
-  namespace: k8s-namespace
+  name: tekton-tekton-pipeline-git-access
+  namespace: tekton-namespace
 rules:
 - apiGroups: [""]
   resources: ["pods"]
@@ -152,15 +151,15 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: tekton-k8s-pipeline-git-access-binding
-  namespace: k8s-namespace
+  name: tekton-tekton-pipeline-git-access-binding
+  namespace: tekton-namespace
 subjects:
 - kind: ServiceAccount
-  name: k8s-pipeline-service-account
-  namespace: k8s-namespace
+  name: tekton-pipeline-service-account
+  namespace: tekton-namespace
 roleRef:
   kind: ClusterRole
-  name: tekton-k8s-pipeline-git-access
+  name: tekton-tekton-pipeline-git-access
   apiGroup: rbac.authorization.k8s.io
 
 ---
@@ -168,8 +167,8 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: tekton-k8s-pipeline-workspace-access-role
-  namespace: k8s-namespace
+  name: tekton-tekton-pipeline-workspace-access-role
+  namespace: tekton-namespace
 rules:
 - apiGroups: [""]
   resources: ["pods/exec", "pods/log"]
@@ -186,13 +185,13 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: tekton-k8s-pipeline-workspace-access-binding
-  namespace: k8s-namespace
+  name: tekton-tekton-pipeline-workspace-access-binding
+  namespace: tekton-namespace
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: tekton-k8s-pipeline-workspace-access-role
+  name: tekton-tekton-pipeline-workspace-access-role
 subjects:
 - kind: ServiceAccount
   name: ticgo-pipeline-service-account
-  namespace: k8s-namespace
+  namespace: tekton-namespace

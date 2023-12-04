@@ -17,6 +17,10 @@ spec:
     type: string
   - name: maven-image-reference
     type: string
+  <%_ if (PathToPomFile == "Directory") { _%>
+  - name: directory
+    type: string
+  <%_ } _%>
  
 
   workspaces:
@@ -52,4 +56,8 @@ spec:
       value: $(params.image-reference)
     - name: MAVEN_IMAGE
       value: $(params.maven-image-reference)
+    <%_ if (PathToPomFile == "Directory") { _%>
+    - name: DIRECTORY
+      value: $(params.directory)
+    <%_ } _%>
    
