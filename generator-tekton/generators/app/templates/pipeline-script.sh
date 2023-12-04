@@ -35,7 +35,6 @@ echo ""
 echo ""
 namespace="<%= namespaceName %>"
 tkn hub install task git-clone -n ${namespace}
-tkn hub install task sendmail -n ${namespace}
 <%_ if (buildStrategy == "kaniko") { _%>
 tkn hub install task kaniko  -n ${namespace}
 <%_ } _%>
