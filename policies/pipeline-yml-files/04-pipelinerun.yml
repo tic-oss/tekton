@@ -1,0 +1,42 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: policies-pipeline-run-
+  namespace: policies-namespace
+spec:
+  serviceAccountName: policies-pipeline-service-account
+  pipelineRef:
+    name: policies-pipeline
+
+  podTemplate:
+    securityContext:
+      fsGroup: 65532
+  workspaces:
+  - name: shared-data
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 2Gi
+  - name: docker-credentials
+    secret:
+      secretName: docker-credentials
+  - name: ssh-creds
+    secret:
+      secretName: git-sshkey-secret
+
+  params:
+  - name: repo-url
+    value: https://github.com/Nandiniperikala/policies.git
+  - name: revision
+    value: main 
+  - name: submodules
+    value: "false"
+  - name: image-reference
+    value: ticacr.azurecr.io/policies:latest
+  - name: maven-image-reference
+    value: lokeshkarakala/custom-maven-image
+   
+  

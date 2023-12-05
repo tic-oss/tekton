@@ -13,7 +13,7 @@ spec:
     value: "false"
   - name: image-reference
     value: <%= imageRepositoryURL %>
-  <%_ if (DockerfilePath == "Dockerfile") { _%>
+  <%_ if (DockerfilePath == "Directory") { _%>
   - name: context
     value: <%= PathtoContext %>
   - name: dockerfile
@@ -34,7 +34,7 @@ spec:
   - name: repo-url
   - name: image-reference
   - name: submodules
-  <%_ if (DockerfilePath == "Dockerfile") { _%>
+  <%_ if (DockerfilePath == "Directory") { _%>
   - name: dockerfile
   - name: context
   <%_ } _%>
@@ -75,7 +75,7 @@ spec:
         value: $(tt.params.submodules)
       - name: image-reference
         value: $(tt.params.image-reference)
-      <%_ if (DockerfilePath == "Dockerfile") { _%>
+      <%_ if (DockerfilePath == "Directory") { _%>
       - name: context
         value: $(tt.params.context)
       - name: dockerfile

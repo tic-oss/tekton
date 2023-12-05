@@ -1,0 +1,90 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: k8s-pipeline-trigger-binding
+  namespace: k8s-namespace
+spec:
+  params:
+  - name: revision
+    value: $(body.head_commit.id)
+  - name: repo-url
+    value: git@github.com:Nandiniperikala/spring.git
+  - name: submodules
+    value: "false"
+  - name: server
+    value: "email-secret"
+  - name: subject
+    value: Hi, again!
+  - name: body
+    value: "Tekton email"
+  - name: sender
+    value: "harikasree2225@gmail.com"
+  - name: recipients
+    value: "nandinidevops3@gmail.com"
+  
+ 
+  
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: k8s-pipeline-trigger-template
+  namespace: k8s-namespace
+spec:
+  params:
+  - name: revision
+    default: main
+  - name: repo-url
+  - name: submodules
+  - name: server
+  - name: subject
+  - name: body
+  - name: sender
+  - name: recipients
+ 
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: k8s-pipeline-run-
+    spec:
+      serviceAccountName: k8s-pipeline-service-account
+      pipelineRef:
+        name: k8s-pipeline
+      podTemplate:
+        securityContext:
+          fsGroup: 65532 
+      workspaces:
+      - name: shared-data
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 2Gi
+      - name: ssh-creds
+        secret:
+          secretName: git-sshkey-secret
+      
+          
+      params:
+      - name: repo-url
+        value: $(tt.params.repo-url)
+      - name: revision
+        value: $(tt.params.revision)
+      - name: submodules
+        value: $(tt.params.submodules)
+      - name: server
+        value: $(tt.params.server)
+      - name: subject
+        value: $(tt.params.subject)
+      - name: body
+        value: $(tt.params.body)
+      - name: sender
+        value: $(tt.params.sender)
+      - name: recipients
+        value: $(tt.params.recipients)
+
+      

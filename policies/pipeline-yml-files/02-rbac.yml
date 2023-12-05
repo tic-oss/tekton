@@ -1,0 +1,197 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: policies-pipeline-service-account
+  namespace: policies-namespace
+secrets:
+  - name: git-sshkey-secret
+  - name: docker-credentials
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tekton-policies-pipeline-role
+  namespace: policies-namespace
+rules:
+# EventListeners need to be able to fetch all namespaced resources
+- apiGroups: ["triggers.tekton.dev"]
+  resources: ["eventlisteners", "triggerbindings", "triggertemplates", "triggers", "interceptors"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+# configmaps is needed for updating logging config
+  resources: ["configmaps"]
+  verbs: ["get", "list", "watch"]
+# Permissions to create resources in associated TriggerTemplates
+- apiGroups: ["tekton.dev"]
+  resources: ["pipelineruns", "pipelineresources", "taskruns"]
+  verbs: ["create"]
+- apiGroups: [""]
+  resources: ["serviceaccounts"]
+  verbs: ["impersonate"]
+- apiGroups: ["policy"]
+  resources: ["podsecuritypolicies"]
+  resourceNames: ["tekton-triggers"]
+  verbs: ["use"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tekton-policies-pipeline-binding
+  namespace: policies-namespace
+subjects:
+- kind: ServiceAccount
+  name: policies-pipeline-service-account
+  namespace: policies-namespace
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tekton-policies-pipeline-role
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tekton-policies-pipeline-clusterrole
+  namespace: policies-namespace
+rules:
+  # EventListeners need to be able to fetch any clustertriggerbindings
+- apiGroups: ["triggers.tekton.dev"]
+  resources: ["clustertriggerbindings", "clusterinterceptors", "interceptors"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-policies-pipeline-clusterbinding
+  namespace: policies-namespace
+subjects:
+- kind: ServiceAccount
+  name: policies-pipeline-service-account
+  namespace: policies-namespace
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tekton-policies-pipeline-clusterrole
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tekton-policies-pipeline-kubectl-role
+  namespace: policies-namespace
+rules:
+- apiGroups:
+  - "*"
+  resources:
+  - pods
+  - deployments
+  - deployments/scale
+  - deployments/status
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - delete
+  - patch
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tekton-policies-pipeline-kubectl-binding
+  namespace: policies-namespace
+subjects:
+- kind: ServiceAccount
+  name: policies-pipeline-service-account
+  namespace: policies-namespace
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tekton-policies-pipeline-kubectl-role
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tekton-policies-pipeline-ssh-role
+  namespace: policies-namespace
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tekton-policies-pipeline-ssh-binding
+  namespace: policies-namespace
+subjects:
+- kind: ServiceAccount
+  name: policies-pipeline-service-account
+  namespace: policies-namespace
+roleRef:
+  kind: Role
+  name: tekton-policies-pipeline-ssh-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tekton-policies-pipeline-git-access
+  namespace: policies-namespace
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["create", "get", "list", "delete"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-policies-pipeline-git-access-binding
+  namespace: policies-namespace
+subjects:
+- kind: ServiceAccount
+  name: policies-pipeline-service-account
+  namespace: policies-namespace
+roleRef:
+  kind: ClusterRole
+  name: tekton-policies-pipeline-git-access
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tekton-policies-pipeline-workspace-access-role
+  namespace: policies-namespace
+rules:
+- apiGroups: [""]
+  resources: ["pods/exec", "pods/log"]
+  verbs: ["create", "get", "list", "watch", "update", "delete"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "exec"]
+- apiGroups: ["tekton.dev"]
+  resources: ["pipelineruns", "tasks", "taskruns"]
+  verbs: ["get", "list", "watch"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-policies-pipeline-workspace-access-binding
+  namespace: policies-namespace
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tekton-policies-pipeline-workspace-access-role
+subjects:
+- kind: ServiceAccount
+  name: ticgo-pipeline-service-account
+  namespace: policies-namespace

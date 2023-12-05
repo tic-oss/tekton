@@ -34,7 +34,7 @@ spec:
     value: <%= branch %> 
   - name: submodules
     value: "false"
-  <%_ if (DockerfilePath == "Dockerfile") { _%>
+  <%_ if (DockerfilePath == "Directory") { _%>
   - name: context
     value: <%= PathtoContext %>
   - name: dockerfile

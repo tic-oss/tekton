@@ -28,7 +28,7 @@ echo ""
 kubectl apply -f pipeline-yml-files/00-namespace.yml
 echo ""
 
-sleep 60
+sleep 30
 
 echo ""
 echo "Installing requrired tasks from tekton hub"
@@ -45,7 +45,7 @@ tkn hub install task jib-maven -n ${namespace}
 <%_ } _%>
 echo ""
 
-sleep 60
+sleep 10
 
 echo ""
 kubectl apply -f pipeline-yml-files/01-secrets.yml

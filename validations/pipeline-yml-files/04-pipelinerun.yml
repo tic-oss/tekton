@@ -1,0 +1,38 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: validations-pipeline-run-
+  namespace: validations-namespace
+spec:
+  serviceAccountName: validations-pipeline-service-account
+  pipelineRef:
+    name: validations-pipeline
+
+  podTemplate:
+    securityContext:
+      fsGroup: 65532
+  workspaces:
+  - name: shared-data
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 2Gi
+  - name: docker-credentials
+    secret:
+      secretName: docker-credentials
+  - name: ssh-creds
+    secret:
+      secretName: git-sshkey-secret
+
+  params:
+  - name: repo-url
+    value: https://github.com/Nandiniperikala/validations.git
+  - name: revision
+    value: main 
+  - name: submodules
+    value: "false"
+  - name: image-reference
+    value: nandiniperikala/validations:latest
