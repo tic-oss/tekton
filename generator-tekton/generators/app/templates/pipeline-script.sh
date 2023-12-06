@@ -44,7 +44,7 @@ tkn hub install task jib-maven -n ${namespace}
 <%_ } _%>
 echo ""
 
-sleep 10
+sleep 30
 
 echo ""
 kubectl apply -f pipeline-yml-files/01-secrets.yml
