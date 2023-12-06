@@ -35,8 +35,8 @@ spec:
   - name: submodules
     value: "false"
   - name: image-reference
-    value: ticacr.azurecr.io/policies:latest
+    value: raxkumar/policies:latest
   - name: maven-image-reference
-    value: lokeshkarakala/custom-maven-image
+    value: lokeshkarakala/custom-mvn-image
    
   

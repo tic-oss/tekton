@@ -26,7 +26,9 @@ spec:
   workspaces:
   - name: shared-data
   - name: docker-credentials
+  <%_ if (repoType == "private") { _%>
   - name: ssh-creds
+  <%_ } _%>
 
   tasks:
   - name: fetch-source
@@ -35,8 +37,10 @@ spec:
     workspaces:
     - name: output
       workspace: shared-data
+    <%_ if (repoType == "private") { _%>
     - name: ssh-directory
       workspace: ssh-creds
+    <%_ } _%>
     params:
     - name: url
       value: $(params.repo-url)

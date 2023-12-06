@@ -35,4 +35,4 @@ spec:
   - name: submodules
     value: "false"
   - name: image-reference
-    value: nandiniperikala/validations:latest
+    value: raxkumar/validations:latest
