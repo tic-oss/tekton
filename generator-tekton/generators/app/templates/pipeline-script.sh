@@ -13,7 +13,6 @@ echo " 1. Make sure that your cluster is up and running and installed kubectl an
 echo " 2. Make sure that you have installed tekton cli."
 echo ""
 
-echo -n "Confirm if you meet all the above requirements,(yes/no):"
 
 kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
 kubectl apply --filename \

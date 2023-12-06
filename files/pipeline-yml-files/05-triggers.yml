@@ -1,0 +1,73 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: tekton-pipeline-trigger-binding 
+  namespace: tekton-namespace
+spec:
+  params:
+  - name: revision
+    value: $(body.head_commit.id)
+  - name: repo-url
+    value: https://github.com/Nandiniperikala/policies.git
+  - name: submodules
+    value: "false"
+  - name: image-reference
+    value: raxkumar/policies:latest
+  - name: maven-image-reference
+    value: lokeshkarakala/custom-maven-image
+  
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: tekton-pipeline-trigger-template
+  namespace: tekton-namespace
+spec:
+  params:
+  - name: revision
+    default: main
+  - name: maven-image-reference
+  - name: repo-url
+  - name: image-reference
+  - name: submodules
+  - name: directory
+  
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: tekton-pipeline-run-
+      namespace: tekton-namespace
+    spec:
+      serviceAccountName: tekton-pipeline-service-account
+      pipelineRef:
+        name: tekton-pipeline
+      podTemplate:
+        securityContext:
+          fsGroup: 65532  
+      workspaces:
+      - name: shared-data
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 2Gi
+      - name: docker-credentials
+        secret:
+          secretName: docker-credentials
+      
+      params:
+      - name: repo-url
+        value: $(tt.params.repo-url)
+      - name: revision
+        value: $(tt.params.revision)
+      - name: submodules
+        value: $(tt.params.submodules)
+      - name: image-reference
+        value: $(tt.params.image-reference)
+      - name: maven-image-reference
+        value: $(tt.params.maven-image-reference)
+      
