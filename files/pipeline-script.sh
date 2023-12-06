@@ -13,7 +13,6 @@ echo " 1. Make sure that your cluster is up and running and installed kubectl an
 echo " 2. Make sure that you have installed tekton cli."
 echo ""
 
-echo -n "Confirm if you meet all the above requirements,(yes/no):"
 
 kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
 kubectl apply --filename \
@@ -37,10 +36,10 @@ echo ""
 echo ""
 namespace="tekton-namespace"
 tkn hub install task git-clone -n ${namespace}
-tkn hub install task jib-maven -n ${namespace}
+tkn hub install task kaniko  -n ${namespace}
 echo ""
 
-sleep 10
+sleep 30
 
 echo ""
 kubectl apply -f pipeline-yml-files/01-secrets.yml

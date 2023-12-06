@@ -1,51 +1,45 @@
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
-  name: tekton-pipeline-trigger-binding 
+  name: nandini-pipeline-trigger-binding
   namespace: tekton-namespace
 spec:
   params:
   - name: revision
     value: $(body.head_commit.id)
   - name: repo-url
-    value: https://github.com/Nandiniperikala/policies.git
+    value: https://github.com/Nandiniperikala/validations.git
   - name: submodules
     value: "false"
   - name: image-reference
-    value: raxkumar/policies:latest
-  - name: maven-image-reference
-    value: lokeshkarakala/custom-maven-image
+    value: ticacr.azurecr.io/azure-go:latest
   
 ---
 
 apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerTemplate
 metadata:
-  name: tekton-pipeline-trigger-template
+  name: nandini-pipeline-trigger-template
   namespace: tekton-namespace
 spec:
   params:
   - name: revision
     default: main
-  - name: maven-image-reference
   - name: repo-url
   - name: image-reference
   - name: submodules
-  - name: directory
-  
   resourcetemplates:
   - apiVersion: tekton.dev/v1beta1
     kind: PipelineRun
     metadata:
-      generateName: tekton-pipeline-run-
-      namespace: tekton-namespace
+      generateName: nandini-pipeline-run-
     spec:
-      serviceAccountName: tekton-pipeline-service-account
+      serviceAccountName: nandini-pipeline-service-account
       pipelineRef:
-        name: tekton-pipeline
+        name: nandini-pipeline
       podTemplate:
         securityContext:
-          fsGroup: 65532  
+          fsGroup: 65532 
       workspaces:
       - name: shared-data
         volumeClaimTemplate:
@@ -58,7 +52,7 @@ spec:
       - name: docker-credentials
         secret:
           secretName: docker-credentials
-      
+          
       params:
       - name: repo-url
         value: $(tt.params.repo-url)
@@ -68,6 +62,3 @@ spec:
         value: $(tt.params.submodules)
       - name: image-reference
         value: $(tt.params.image-reference)
-      - name: maven-image-reference
-        value: $(tt.params.maven-image-reference)
-      

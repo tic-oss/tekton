@@ -1,19 +1,19 @@
 apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
 metadata:
-  name: tekton-pipeline-eventlistener
+  name: nandini-pipeline-eventlistener
   namespace: tekton-namespace
 spec:
   resources:
     kubernetesResource:
       serviceType: LoadBalancer
-  serviceAccountName: tekton-pipeline-service-account
+  serviceAccountName: nandini-pipeline-service-account
   triggers:
-    - name: tekton-pipeline-trigger
+    - name: nandini-pipeline-trigger
       bindings:
-        - ref: tekton-pipeline-trigger-binding
+        - ref: nandini-pipeline-trigger-binding
       template:
-        ref: tekton-pipeline-trigger-template
+        ref: nandini-pipeline-trigger-template
 
 
 

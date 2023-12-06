@@ -35,7 +35,9 @@ spec:
   - name: repo-url
   - name: image-reference
   - name: submodules
+  <%_ if (PathToPomFile == "Directory") { _%>
   - name: directory
+  <%_ } _%>
   
   resourcetemplates:
   - apiVersion: tekton.dev/v1beta1

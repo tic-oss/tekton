@@ -1,11 +1,12 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: tekton-pipeline
+  name: nandini-pipeline
   namespace: tekton-namespace
 spec:
   description: | 
-    This pipeline clones a git repo and builds a Spring Boot
+    This pipeline clones a git repo, builds a Docker image with Kaniko and
+    pushes it to a registry
   params:
   - name: repo-url
     type: string
@@ -15,11 +16,8 @@ spec:
     type: string
   - name: image-reference
     type: string
-  - name: maven-image-reference
-    type: string
- 
- 
-
+  
+  
   workspaces:
   - name: shared-data
   - name: docker-credentials
@@ -38,16 +36,16 @@ spec:
       value: $(params.revision)
     - name: submodules
       value: $(params.submodules)
-  - name: jib-maven
-    taskRef:
-      name: jib-maven
+
+  - name: build-push
     runAfter: ["fetch-source"]
+    taskRef:
+      name: kaniko
     workspaces:
     - name: source
       workspace: shared-data
+    - name: dockerconfig
+      workspace: docker-credentials
     params:
     - name: IMAGE
       value: $(params.image-reference)
-    - name: MAVEN_IMAGE
-      value: $(params.maven-image-reference)
-   

@@ -43,16 +43,17 @@ or
 
 <br>For more information, go through https://hub.tekton.dev/tekton/task/git-clone</br>
 
-
 <br>
+install kaniko task using<br>
 
-install jib-maven task using<br>
-
-```kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/jib-maven/0.5/jib-maven.yaml -n <namespace name> ```
+```kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/kaniko/0.6/kaniko.yaml -n <namespace name>```
 or
-```tkn hub install task jib-maven -n <namespace name> ```
+```tkn hub install task kaniko -n <namespace name>```
 
-For more information on kaniko, visit https://hub.tekton.dev/tekton/task/jib-maven</br>
+
+
+For more information on kaniko, visit https://hub.tekton.dev/tekton/task/kaniko</br>
+
 
 
 <h3>Run the yml files needed to run the pipeline.</h3>
