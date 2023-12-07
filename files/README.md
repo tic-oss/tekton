@@ -43,17 +43,16 @@ or
 
 <br>For more information, go through https://hub.tekton.dev/tekton/task/git-clone</br>
 
+
 <br>
-install kaniko task using<br>
 
-```kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/kaniko/0.6/kaniko.yaml -n <namespace name>```
+install jib-maven task using<br>
+
+```kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/jib-maven/0.5/jib-maven.yaml -n <namespace name> ```
 or
-```tkn hub install task kaniko -n <namespace name>```
+```tkn hub install task jib-maven -n <namespace name> ```
 
-
-
-For more information on kaniko, visit https://hub.tekton.dev/tekton/task/kaniko</br>
-
+For more information on kaniko, visit https://hub.tekton.dev/tekton/task/jib-maven</br>
 
 
 <h3>Run the yml files needed to run the pipeline.</h3>
@@ -75,16 +74,9 @@ For more information on kaniko, visit https://hub.tekton.dev/tekton/task/kaniko<
 
 
 <br>
-<li>Create the eventlistener using the following command:</li>
+<li>Create the pipelinerun using the following command:</li>
 
-     kubectl apply -f pipeline-yml-files/04-event-listener.yml -n <namespace name>
-
-And eventlistener will run on port 8080 and 9000
-
-<li>create the  Triggers using the following command:</li>
-
-     kubectl apply -f pipeline-yml-files/05-triggers.yml -n <namespace name>
-
+     kubectl create -f pipeline-yml-files/04-pipelinerun.yml -n <namespace name> 
 
 <h4>To activate triggers, </h4>
 <ul>

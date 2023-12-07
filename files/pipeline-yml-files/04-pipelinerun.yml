@@ -1,0 +1,39 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: nandini-run-
+  namespace: nandini
+spec:
+  serviceAccountName: nandini-service-account
+  pipelineRef:
+    name: nandini
+
+  podTemplate:
+    securityContext:
+      fsGroup: 65532
+  workspaces:
+  - name: shared-data
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 2Gi
+  - name: docker-credentials
+    secret:
+      secretName: docker-credentials
+
+  params:
+  - name: repo-url
+    value: https://github.com/Nandiniperikala/policies.git
+  - name: revision
+    value: main 
+  - name: submodules
+    value: "false"
+  - name: image-reference
+    value: lokeshkarakala/policies:latest
+  - name: maven-image-reference
+    value: lokeshkarakala/custom-maven-image
+   
+  

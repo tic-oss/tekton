@@ -34,9 +34,9 @@ echo "Installing requrired tasks from tekton hub"
 echo ""
 
 echo ""
-namespace="tekton-namespace"
+namespace="nandini"
 tkn hub install task git-clone -n ${namespace}
-tkn hub install task kaniko  -n ${namespace}
+tkn hub install task jib-maven -n ${namespace}
 echo ""
 
 sleep 30
@@ -45,8 +45,7 @@ echo ""
 kubectl apply -f pipeline-yml-files/01-secrets.yml
 kubectl apply -f pipeline-yml-files/02-rbac.yml
 kubectl apply -f pipeline-yml-files/03-pipeline.yml
-kubectl apply -f pipeline-yml-files/04-event-listener.yml
-kubectl apply -f pipeline-yml-files/05-triggers.yml
+kubectl create -f pipeline-yml-files/04-pipelinerun.yml
 echo ""
 
 echo ""

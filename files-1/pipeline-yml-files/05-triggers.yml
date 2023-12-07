@@ -1,0 +1,64 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: nandini-pipeline-trigger-binding
+  namespace: tekton-namespace
+spec:
+  params:
+  - name: revision
+    value: $(body.head_commit.id)
+  - name: repo-url
+    value: https://github.com/Nandiniperikala/validations.git
+  - name: submodules
+    value: "false"
+  - name: image-reference
+    value: ticacr.azurecr.io/azure-go:latest
+  
+---
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: nandini-pipeline-trigger-template
+  namespace: tekton-namespace
+spec:
+  params:
+  - name: revision
+    default: main
+  - name: repo-url
+  - name: image-reference
+  - name: submodules
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: nandini-pipeline-run-
+    spec:
+      serviceAccountName: nandini-pipeline-service-account
+      pipelineRef:
+        name: nandini-pipeline
+      podTemplate:
+        securityContext:
+          fsGroup: 65532 
+      workspaces:
+      - name: shared-data
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 2Gi
+      - name: docker-credentials
+        secret:
+          secretName: docker-credentials
+          
+      params:
+      - name: repo-url
+        value: $(tt.params.repo-url)
+      - name: revision
+        value: $(tt.params.revision)
+      - name: submodules
+        value: $(tt.params.submodules)
+      - name: image-reference
+        value: $(tt.params.image-reference)
