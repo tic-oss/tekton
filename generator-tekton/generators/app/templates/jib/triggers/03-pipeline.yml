@@ -65,7 +65,7 @@ spec:
     - name: DIRECTORY
       value: $(params.directory)
     <%_ } _%>
-  <%_ if (sonarqube == "yes") { _%>
+  <%_ if (SonarQube == "yes") { _%>
   - name: code-analysis
     taskRef:
       name: sonarqube-scanner

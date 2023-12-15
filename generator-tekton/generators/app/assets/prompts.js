@@ -112,8 +112,8 @@ let prompts = [
   },
   {
     type: "list",
-    name: "sonarqube",
-    message: "add sonar-scanner?",
+    name: "SonarQube",
+    message: "Include SonarQube for code quality analysis?",
     choices: ["yes", "no"]
   },
   {
