@@ -45,7 +45,7 @@ module.exports = class extends Generator {
       DockerfilePath,
       PathtoContext,
       PathtoDockerfile,
-      sonarqube
+      SonarQube
     } = shouldPrompt ? props : options;
     const {
       buildStrategy: optionsBuildStrategy,
@@ -95,7 +95,7 @@ module.exports = class extends Generator {
         PathtoContext,
         DockerfilePath,
         PathtoDockerfile,
-        sonarqube
+        SonarQube
       });
     });
   }
